@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ask Me Anything</title>
+
+    <link
+      href="https://cdn.muicss.com/mui-latest/css/mui.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link href="./src/css/style.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.muicss.com/mui-latest/js/mui.min.js"></script>
+  </head>
+
+  <body>
+    <div id="sidebar">
+      <h1 class="mui--text-white mui--text-display1 mui--align-vertical">
+        Ask Me Anything
+      </h1>
+      <hr />
+      <h2 class="mui--text-white mui--text-subhead">Ask KOTTANS right now!</h2>
+      <hr />
+      <p id="userName" class="mui--text-white mui--text-subhead"></p>
+      <div>
+        <button id="logIn" class="mui-btn mui-btn--raised">LogIn</button>
+        <button id="logOut" class="mui-btn mui-btn--raised d-none">
+          Logout
+        </button>
+      </div>
+    </div>
+
+    <div id="content" class="mui-container-fluid"></div>
+
+    <button
+      id="toggleScreen"
+      class="mui-btn mui-btn--large mui-btn--primary mui-btn--fab toggleScreenBtn d-none"
+    ></button>
+
+    <script type="module" src="./src/js/app.js"></script>
+  </body>
+</html>

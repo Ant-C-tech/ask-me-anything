@@ -1,0 +1,81 @@
+/**
+ * Body CSS
+ */
+
+html,
+body {
+  height: 100%;
+}
+
+html,
+body,
+input,
+textarea,
+button {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
+}
+
+.d-none{
+  display: none;
+}
+
+.bold{
+  font-weight: bold;
+}
+
+/**
+ * Sidebar CSS
+ */
+
+#sidebar {
+  background-color: #2196f3;
+  padding: 15px;
+}
+
+.mui-appbar {
+  padding: 1rem 1rem 0;
+}
+
+.mui-form {
+  margin-bottom: 3rem;
+}
+
+.question__divider {
+  margin: 5px 0;
+}
+
+.question__text {
+  font-size: 16px;
+  color: rgb(114, 114, 114);
+  font-weight: bold;
+}
+
+.toggleScreenBtn{
+  position: fixed;
+  right:20px;
+  bottom: 20px;
+  padding: 0;
+}
+
+@media (min-width: 768px) {
+  #sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 180px;
+    height: 100%;
+    padding-top: 30px;
+  }
+}
+
+/**
+ * Content CSS
+ */
+@media (min-width: 768px) {
+  #content {
+    margin-top: 30px;
+    margin-left: 230px;
+  }
+}
