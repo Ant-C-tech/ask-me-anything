@@ -8,6 +8,8 @@ import { activateLogInForm } from "./log-in.js";
 import { logOut } from "./log-in.js";
 import { userWindowContent } from "./user-window.js";
 import { activateUserWindowContent } from "./user-window.js";
+import { registerContent } from "./register.js";
+import { activateRegisterForm } from "./register.js";
 
 
 const changeScreen = ({ target }) => {
@@ -26,3 +28,6 @@ document.querySelector("#logIn").addEventListener("click", () => {
 });
 document.querySelector("#logOut").addEventListener("click", logOut);
 document.querySelector("#toggleScreen").addEventListener("click", changeScreen);
+document.querySelector("#register").addEventListener("click", () => {
+  createModal(registerContent, activateRegisterForm);
+});

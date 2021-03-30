@@ -4,15 +4,16 @@ import { createContent } from "./utils.js";
 import { userWindowContent } from "./user-window.js";
 import { activateUserWindowContent } from "./user-window.js";
 import { Question } from "./question.js";
+import { API_KEY } from "./register.js";
+import { USER_NAME_BLOCK } from "./register.js";
+import { TOGGLE_SCREEN_BUTTON } from "./register.js";
+import { LOGIN_BUTTON } from "./register.js";
+import { LOGOUT_BUTTON } from "./register.js";
+import { REGISTER_BUTTON } from "./register.js";
 
-const API_KEY = "AIzaSyBumV9Ic_eoFB0Wx5CDXPh4YveIo2X4aF0";
+
 export let authToken;
 export let userName;
-
-const USER_NAME_BLOCK = document.querySelector("#userName");
-const TOGGLE_SCREEN_BUTTON = document.querySelector("#toggleScreen");
-const LOGIN_BUTTON = document.querySelector("#logIn");
-const LOGOUT_BUTTON = document.querySelector("#logOut");
 
 export const logInContent = `<h3 class="mui--text-headline">Login to your account</h3>
 <form id="logInForm" class="mui-form">
@@ -36,6 +37,7 @@ export const logInContent = `<h3 class="mui--text-headline">Login to your accoun
     id="logInBtn"
     type="submit"
     class="mui-btn mui-btn--primary"
+    disabled
   >
     Login
   </button>
@@ -66,6 +68,7 @@ const showUserNameGreeting = (email) => {
 const logInFormHandler = (e) => {
   e.preventDefault();
   LOGIN_BUTTON.classList.add("d-none");
+  REGISTER_BUTTON.classList.add("d-none");
   LOGOUT_BUTTON.classList.remove("d-none");
   TOGGLE_SCREEN_BUTTON.classList.remove("d-none");
   TOGGLE_SCREEN_BUTTON.innerHTML = "All";
@@ -90,6 +93,7 @@ export const activateLogInForm = () => {
 export const logOut = () => {
   USER_NAME_BLOCK.innerHTML = "";
   Question.getAllQuestions();
+   REGISTER_BUTTON.classList.remove("d-none");
   LOGIN_BUTTON.classList.remove("d-none");
   LOGOUT_BUTTON.classList.add("d-none");
   TOGGLE_SCREEN_BUTTON.classList.add("d-none");

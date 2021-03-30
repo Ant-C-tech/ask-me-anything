@@ -17,11 +17,11 @@ button {
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
 }
 
-.d-none{
+.d-none {
   display: none;
 }
 
-.bold{
+.bold {
   font-weight: bold;
 }
 
@@ -42,6 +42,10 @@ button {
   margin-bottom: 3rem;
 }
 
+#logIn, #logOut, #register {
+  width: 120px;
+}
+
 .question__divider {
   margin: 5px 0;
 }
@@ -52,9 +56,9 @@ button {
   font-weight: bold;
 }
 
-.toggleScreenBtn{
+.toggleScreenBtn {
   position: fixed;
-  right:20px;
+  right: 20px;
   bottom: 20px;
   padding: 0;
 }
