@@ -34,6 +34,10 @@ button {
   padding: 15px;
 }
 
+.logo{
+  width: 150px;
+}
+
 .mui-appbar {
   padding: 1rem 1rem 0;
 }

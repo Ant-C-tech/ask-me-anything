@@ -7,14 +7,16 @@ import { userWindowContent } from "./user-window.js";
 import { activateUserWindowContent } from "./user-window.js";
 import { Question } from "./question.js";
 import { API_KEY } from "./register.js";
-import { USER_NAME_BLOCK } from "./register.js";
+
 import { TOGGLE_SCREEN_BUTTON } from "./register.js";
 import { LOGIN_BUTTON } from "./register.js";
 import { LOGOUT_BUTTON } from "./register.js";
 import { REGISTER_BUTTON } from "./register.js";
+import { showUserNameGreeting } from "./register.js";
+import { USER_NAME_BLOCK } from "./register.js";
 
 export let authToken;
-export let userName;
+
 
 export const logInContent = `<h3 class="mui--text-headline">Login to your account</h3>
 <form id="logInForm" class="mui-form">
@@ -61,10 +63,10 @@ export const authWithEmailAndPassword = (email, password) => {
   ).then((response) => response.json());
 };
 
-const showUserNameGreeting = (email) => {
-  userName = email.slice(0, email.indexOf("@"));
-  USER_NAME_BLOCK.innerHTML = `Welcome, <span class="bold">${userName}</span>!<br>Don't hesitate to ask!`;
-};
+// const showUserNameGreeting = (email) => {
+//   userName = email.slice(0, email.indexOf("@"));
+//   USER_NAME_BLOCK.innerHTML = `Welcome, <span class="bold">${userName}</span>!<br>Don't hesitate to ask!`;
+// };
 
 const logInFormHandler = (e) => {
   e.preventDefault();

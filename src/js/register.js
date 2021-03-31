@@ -8,6 +8,8 @@ export const TOGGLE_SCREEN_BUTTON = document.querySelector("#toggleScreen");
 export const LOGIN_BUTTON = document.querySelector("#logIn");
 export const LOGOUT_BUTTON = document.querySelector("#logOut");
 
+export let userName;
+
 export const registerContent = `<h3 class="mui--text-headline">Create new account</h3>
 <form id="registerForm" class="mui-form">
   <div class="mui-textfield mui-textfield--float-label">
@@ -30,12 +32,17 @@ export const registerContent = `<h3 class="mui--text-headline">Create new accoun
     id="registerBtn"
     type="submit"
     class="mui-btn mui-btn--primary"
-    disabled
   >
     Create
   </button>
 </form>`;
 
-export const activateRegisterForm = () => {
+export const showUserNameGreeting = (email) => {
+  userName = email.slice(0, email.indexOf("@"));
+  USER_NAME_BLOCK.innerHTML = `Welcome, <span class="bold">${userName}</span>!<br>Don't hesitate to ask!`;
+};
 
+export const activateRegisterForm = () => {
+  const registerButton = document.querySelector("#registerBtn");
+  registerButton.addEventListener("click", registerFormHandler, { once: true });
 }

@@ -1,6 +1,6 @@
 "use strict";
 
-import { userName } from "./log-in.js";
+import { userName } from "./register.js";
 
 const CONTENT_BLOCK = document.querySelector("#content");
 

@@ -2,7 +2,7 @@
 import { isValidQuestion } from "./utils.js";
 import { Question } from "./question.js";
 import { authToken } from "./log-in.js";
-import { userName } from "./log-in.js";
+import { userName } from "./register.js";
 
 let newQuestionForm;
 let newQuestionInput;
