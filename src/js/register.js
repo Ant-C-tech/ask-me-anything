@@ -1,5 +1,8 @@
 'use strict'
 
+import { isValidEmail } from "./utils.js";
+import { isValidPassword } from "./utils.js";
+
 export const API_KEY = "AIzaSyBumV9Ic_eoFB0Wx5CDXPh4YveIo2X4aF0";
 
 export const REGISTER_BUTTON = document.querySelector("#register");
@@ -24,9 +27,10 @@ export const registerContent = `<h3 class="mui--text-headline">Create new accoun
     <input
       id="passwordInput"
       type="password"
+      minlength="6"
       required
     />
-    <label for="passwordInput">Your Password...</label>
+    <label for="passwordInput">Your Password (at least 6 symbols)...</label>
   </div>
   <button
     id="registerBtn"
@@ -40,6 +44,39 @@ export const registerContent = `<h3 class="mui--text-headline">Create new accoun
 export const showUserNameGreeting = (email) => {
   userName = email.slice(0, email.indexOf("@"));
   USER_NAME_BLOCK.innerHTML = `Welcome, <span class="bold">${userName}</span>!<br>Don't hesitate to ask!`;
+};
+
+const registerFormHandler = (e) => {
+  e.preventDefault();
+
+  const userEmail = document.querySelector("#emailInput").value;
+  const userPassword = document.querySelector("#passwordInput").value;
+
+  if (isValidEmail(userEmail) && isValidPassword(userPassword)) {
+    LOGIN_BUTTON.classList.add("d-none");
+    REGISTER_BUTTON.classList.add("d-none");
+    LOGOUT_BUTTON.classList.remove("d-none");
+    TOGGLE_SCREEN_BUTTON.classList.remove("d-none");
+    TOGGLE_SCREEN_BUTTON.innerHTML = "All";
+
+    // authWithEmailAndPassword(userEmail, userPassword)
+    //   .then((data) => {
+    //     authToken = data.idToken;
+    //     showUserNameGreeting(data.email);
+    //     createContent(userWindowContent, activateUserWindowContent);
+    //     mui.overlay("off");
+    //   })
+    //   .catch(() => {
+    //     mui.overlay("off");
+    //     createContent(
+    //       '<div class="mui--text-headline">Password or email is wrong or You did not register yet. Try again or register!</div>'
+    //     );
+    //     REGISTER_BUTTON.classList.remove("d-none");
+    //     LOGIN_BUTTON.classList.remove("d-none");
+    //     LOGOUT_BUTTON.classList.add("d-none");
+    //     TOGGLE_SCREEN_BUTTON.classList.add("d-none");
+    //   });
+  }
 };
 
 export const activateRegisterForm = () => {

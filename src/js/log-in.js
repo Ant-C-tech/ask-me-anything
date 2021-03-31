@@ -63,11 +63,6 @@ export const authWithEmailAndPassword = (email, password) => {
   ).then((response) => response.json());
 };
 
-// const showUserNameGreeting = (email) => {
-//   userName = email.slice(0, email.indexOf("@"));
-//   USER_NAME_BLOCK.innerHTML = `Welcome, <span class="bold">${userName}</span>!<br>Don't hesitate to ask!`;
-// };
-
 const logInFormHandler = (e) => {
   e.preventDefault();
 
