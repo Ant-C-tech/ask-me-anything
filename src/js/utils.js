@@ -2,7 +2,7 @@
 
 const CONTENT_BLOCK = document.querySelector("#content");
 
-export const isValid = (value) => {
+export const isValidQuestion = (value) => {
   return value.length >= 10 && value.length <= 256;
 };
 
@@ -26,3 +26,8 @@ export const createContent = (content, callBack) => {
   CONTENT_BLOCK.innerHTML = content;
   callBack && callBack();
 };
+
+export const isValidEmail  = (email) => {
+  const regexEmailValidation = /\S+@\S+\.\S+/;
+  return regexEmailValidation.test(email);
+}

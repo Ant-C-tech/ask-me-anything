@@ -1,5 +1,5 @@
 "use strict";
-import { isValid } from "./utils.js";
+import { isValidQuestion } from "./utils.js";
 import { Question } from "./question.js";
 import { authToken } from "./log-in.js";
 import { userName } from "./log-in.js";
@@ -32,7 +32,7 @@ const submitFormHandler = (e) => {
 };
 
 const inputFormHandler = () => {
-  if (isValid(newQuestionInput.value) && authToken) {
+  if (isValidQuestion(newQuestionInput.value) && authToken) {
     newQuestionSubmit.disabled = false;
     newQuestionForm.addEventListener("submit", submitFormHandler, {
       once: true,

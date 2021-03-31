@@ -1,6 +1,7 @@
 "use strict";
 
 import { createContent } from "./utils.js";
+import { isValidEmail } from "./utils.js";
 import { userWindowContent } from "./user-window.js";
 import { activateUserWindowContent } from "./user-window.js";
 import { Question } from "./question.js";
@@ -86,6 +87,7 @@ const logInFormHandler = (e) => {
 };
 
 export const activateLogInForm = () => {
+
   const logInButton = document.querySelector("#logInBtn");
   logInButton.addEventListener("click", logInFormHandler, { once: true });
 };
