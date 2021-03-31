@@ -6,6 +6,10 @@ export const isValidQuestion = (value) => {
   return value.length >= 10 && value.length <= 256;
 };
 
+export const isValidPassword = (value) => {
+  return value.length >= 6;
+};
+
 export const createModal = (content, callBack) => {
   // initialize modal element
   const modalEl = document.createElement("div");
@@ -27,7 +31,7 @@ export const createContent = (content, callBack) => {
   callBack && callBack();
 };
 
-export const isValidEmail  = (email) => {
+export const isValidEmail = (email) => {
   const regexEmailValidation = /\S+@\S+\.\S+/;
   return regexEmailValidation.test(email);
-}
+};
