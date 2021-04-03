@@ -38,7 +38,7 @@ export class Question {
     let htmlListOfQuestions = Object.keys(questions)
       .map((key) => {
         return createQuestionCard(questions[key]);
-      })
+      }).reverse()
       .join(" ");
 
     target.innerHTML = htmlListOfQuestions;

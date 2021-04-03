@@ -15,14 +15,13 @@ import { LOGIN_BUTTON } from "./register.js";
 import { LOGOUT_BUTTON } from "./register.js";
 import { REGISTER_BUTTON } from "./register.js";
 
-
-const changeScreen = ({ target }) => {
-  if (target.innerText == "ALL") {
+const changeScreen = () => {
+  if (TOGGLE_SCREEN_BUTTON.innerText == "ALL") {
     Question.getAllQuestions();
-    target.innerHTML = "Profile";
+    TOGGLE_SCREEN_BUTTON.innerHTML = "Profile";
   } else {
     createContent(userWindowContent, activateUserWindowContent);
-    target.innerHTML = "ALL";
+    TOGGLE_SCREEN_BUTTON.innerHTML = "ALL";
   }
 };
 

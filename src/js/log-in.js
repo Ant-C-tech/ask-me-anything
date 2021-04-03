@@ -15,8 +15,8 @@ import { REGISTER_BUTTON } from "./register.js";
 import { showUserNameGreeting } from "./register.js";
 import { USER_NAME_BLOCK } from "./register.js";
 
-export let authToken;
 
+export let authToken;
 
 export const logInContent = `<h3 class="mui--text-headline">Login to your account</h3>
 <form id="logInForm" class="mui-form">
@@ -46,7 +46,7 @@ export const logInContent = `<h3 class="mui--text-headline">Login to your accoun
   </button>
 </form>`;
 
-export const authWithEmailAndPassword = (email, password) => {
+const authWithEmailAndPassword = (email, password) => {
   return fetch(
     `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`,
     {
@@ -108,5 +108,4 @@ export const logOut = () => {
   LOGIN_BUTTON.classList.remove("d-none");
   LOGOUT_BUTTON.classList.add("d-none");
   TOGGLE_SCREEN_BUTTON.classList.add("d-none");
-  //Maybe will need 'undefined' for authToken
 };

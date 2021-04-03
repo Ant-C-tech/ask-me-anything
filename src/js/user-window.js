@@ -1,8 +1,9 @@
 "use strict";
 import { isValidQuestion } from "./utils.js";
 import { Question } from "./question.js";
-import { authToken } from "./log-in.js";
 import { userName } from "./register.js";
+import { registerToken } from "./register.js";
+import { authToken } from "./log-in.js";
 
 let newQuestionForm;
 let newQuestionInput;
@@ -73,6 +74,6 @@ export const userWindowContent = `<div class="mui-row">
 
 export const activateUserWindowContent = () => {
   getElements();
-  Question.getRecentUserQuestions()
+  Question.getRecentUserQuestions();
   newQuestionInput.addEventListener("input", inputFormHandler);
 };
