@@ -25,7 +25,7 @@ const submitFormHandler = (e) => {
   };
 
   newQuestionSubmit.disabled = true;
-  Question.create(newQuestion, authToken).then(() => {
+  Question.create(newQuestion, (authToken || registerToken)).then(() => {
     newQuestionInput.value = "";
     newQuestionInput.className = "";
     Question.getRecentUserQuestions();
@@ -33,7 +33,7 @@ const submitFormHandler = (e) => {
 };
 
 const inputFormHandler = () => {
-  if (isValidQuestion(newQuestionInput.value) && authToken) {
+  if (isValidQuestion(newQuestionInput.value) && (authToken || registerToken)) {
     newQuestionSubmit.disabled = false;
     newQuestionForm.addEventListener("submit", submitFormHandler, {
       once: true,

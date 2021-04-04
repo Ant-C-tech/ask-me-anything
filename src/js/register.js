@@ -16,6 +16,7 @@ export const LOGOUT_BUTTON = document.querySelector("#logOut");
 
 export let userName;
 export let registerToken;
+export const num = 42;
 
 export const registerContent = `<h3 class="mui--text-headline">Create new account</h3>
 <form id="registerForm" class="mui-form">
