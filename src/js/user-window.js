@@ -4,15 +4,18 @@ import { Question } from "./question.js";
 import { userName } from "./register.js";
 import { registerToken } from "./register.js";
 import { authToken } from "./log-in.js";
+import { authUid } from "./log-in.js";
 
 let newQuestionForm;
 let newQuestionInput;
 let newQuestionSubmit;
+let userRecentQuestionsBlock;
 
 const getElements = () => {
   newQuestionForm = document.querySelector("#formNewQuestion");
   newQuestionInput = newQuestionForm.querySelector("#questionInput");
   newQuestionSubmit = newQuestionForm.querySelector("#submitQuestion");
+  userRecentQuestionsBlock = document.querySelector("#userRecentQuestions");
 };
 
 const submitFormHandler = (e) => {
@@ -25,7 +28,7 @@ const submitFormHandler = (e) => {
   };
 
   newQuestionSubmit.disabled = true;
-  Question.create(newQuestion, (authToken || registerToken)).then(() => {
+  Question.create(newQuestion, authToken || registerToken, authUid).then(() => {
     newQuestionInput.value = "";
     newQuestionInput.className = "";
     Question.getRecentUserQuestions();
@@ -38,6 +41,18 @@ const inputFormHandler = () => {
     newQuestionForm.addEventListener("submit", submitFormHandler, {
       once: true,
     });
+  }
+};
+
+const userQuestionsHandler = ({ target }) => {
+  if (target.id === "deleteQuestion") {
+    Question.delete(target.getAttribute("data-id"), authToken || registerToken)
+      .then(() => {
+        Question.getRecentUserQuestions();
+      })
+      .catch(() => {
+        console.log("Error");
+      });
   }
 };
 
@@ -76,4 +91,5 @@ export const activateUserWindowContent = () => {
   getElements();
   Question.getRecentUserQuestions();
   newQuestionInput.addEventListener("input", inputFormHandler);
+  userRecentQuestionsBlock.addEventListener("click", userQuestionsHandler);
 };

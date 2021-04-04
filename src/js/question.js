@@ -4,8 +4,8 @@ import { userName } from "./register.js";
 
 const CONTENT_BLOCK = document.querySelector("#content");
 
-const createQuestionCard = (question) => {
-  return `<div class="mui-panel">
+const createStartQuestionCard = (question, id) => {
+  return `<div class="mui-panel" data-id="${id}">
   <p class="question__text">${question.text}</p>
   <hr class="question__divider">
   <div class="mui--text-black-54">
@@ -20,10 +20,28 @@ const createQuestionCard = (question) => {
 </div>`;
 };
 
+const createUserQuestionCard = (question, id) => {
+  return `<div class="mui-panel" data-id="${id}">
+  <p class="question__text">${question.text}</p>
+  <hr class="question__divider">
+  <div class="mui--text-black-54">
+    By <a href="#">${question.author}</a>
+    <time datetime="${new Date(question.date).toLocaleDateString()}">
+    ${new Date(question.date).toLocaleDateString()}
+    </time>
+    <time datetime="${new Date(question.date).toLocaleTimeString()}">
+    ${new Date(question.date).toLocaleTimeString()}
+    </time>
+  </div>
+  <button id="deleteQuestion" class="mui-btn mui-btn--accent" data-id="${id}">Delete</button>
+  <button id="editQuestion" class="mui-btn mui-btn--accent" data-id="${id}">Edit</button>
+</div>`;
+};
+
 export class Question {
-  static create(newQuestion, token) {
+  static create(newQuestion, token, uId) {
     return fetch(
-      `https://ask-me-anything-cc5c2-default-rtdb.firebaseio.com/questions.json?auth=${token}`,
+      `https://ask-me-anything-cc5c2-default-rtdb.firebaseio.com/questions/${uId}.json?auth=${token}`,
       {
         method: "POST",
         body: JSON.stringify(newQuestion),
@@ -34,16 +52,20 @@ export class Question {
     );
   }
 
-  static renderList(questions, target) {
-    let htmlListOfQuestions = Object.keys(questions)
-      .reverse()
-      .sort((a, b) => {return new Date(questions[b].date) - new Date(questions[a].date);})
+  static createList(questions, renderMethod) {
+    let listOfQuestions = Object.keys(questions)
+      .sort((a, b) => {
+        return new Date(questions[b].date) - new Date(questions[a].date);
+      })
       .map((key) => {
-        return createQuestionCard(questions[key]);
+        return renderMethod(questions[key], key);
       })
       .join(" ");
+    return listOfQuestions;
+  }
 
-    target.innerHTML = htmlListOfQuestions;
+  static renderList(listOfQuestionsHTML, target) {
+    target.innerHTML = listOfQuestionsHTML;
   }
 
   static renderWarning(target) {
@@ -57,11 +79,13 @@ export class Question {
     )
       .then((response) => response.json())
       .then((questions) => {
-        if (questions !== null) {
-          Question.renderList(questions, CONTENT_BLOCK);
-        } else {
-          Question.renderWarning(CONTENT_BLOCK);
-        }
+        return Question.createList(questions, createStartQuestionCard);
+      })
+      .then((data) => {
+        return Question.renderList(data, CONTENT_BLOCK);
+      })
+      .catch(() => {
+        return Question.renderWarning(CONTENT_BLOCK);
       });
   }
 
@@ -85,12 +109,26 @@ export class Question {
       )
         .then((response) => response.json())
         .then((questions) => {
-          if (questions !== null) {
-            Question.renderList(questions, RECENT_QUESTIONS_BLOCK);
-          } else {
-            Question.renderWarning(RECENT_QUESTIONS_BLOCK);
-          }
+          return Question.createList(questions, createUserQuestionCard);
+        })
+        .then((data) => {
+          return Question.renderList(data, RECENT_QUESTIONS_BLOCK);
+        })
+        .catch(() => {
+          return Question.renderWarning(RECENT_QUESTIONS_BLOCK);
         });
     });
+  }
+
+  static delete(id, token) {
+    return fetch(
+      `https://ask-me-anything-cc5c2-default-rtdb.firebaseio.com/questions/${id}.json?auth=${token}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
   }
 }

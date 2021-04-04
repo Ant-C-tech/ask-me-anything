@@ -15,8 +15,8 @@ import { REGISTER_BUTTON } from "./register.js";
 import { showUserNameGreeting } from "./register.js";
 import { USER_NAME_BLOCK } from "./register.js";
 
-
 export let authToken;
+export let authUid;
 
 export const logInContent = `<h3 class="mui--text-headline">Login to your account</h3>
 <form id="logInForm" class="mui-form">
@@ -78,6 +78,7 @@ const logInFormHandler = (e) => {
 
     authWithEmailAndPassword(userEmail, userPassword)
       .then((data) => {
+        authUid = data.localId;
         authToken = data.idToken;
         showUserNameGreeting(data.email);
         createContent(userWindowContent, activateUserWindowContent);
