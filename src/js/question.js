@@ -36,9 +36,11 @@ export class Question {
 
   static renderList(questions, target) {
     let htmlListOfQuestions = Object.keys(questions)
+      .reverse()
+      .sort((a, b) => {return new Date(questions[b].date) - new Date(questions[a].date);})
       .map((key) => {
         return createQuestionCard(questions[key]);
-      }).reverse()
+      })
       .join(" ");
 
     target.innerHTML = htmlListOfQuestions;
