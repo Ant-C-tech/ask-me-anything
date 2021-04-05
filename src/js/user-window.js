@@ -5,6 +5,7 @@ import { userName } from "./register.js";
 import { registerToken } from "./register.js";
 import { authToken } from "./log-in.js";
 import { authUid } from "./log-in.js";
+import { registerUid } from "./register.js";
 
 let newQuestionForm;
 let newQuestionInput;
@@ -28,7 +29,7 @@ const submitFormHandler = (e) => {
   };
 
   newQuestionSubmit.disabled = true;
-  Question.create(newQuestion, authToken || registerToken, authUid).then(() => {
+  Question.create(newQuestion, authToken || registerToken, authUid || registerUid).then(() => {
     newQuestionInput.value = "";
     newQuestionInput.className = "";
     Question.getRecentUserQuestions();

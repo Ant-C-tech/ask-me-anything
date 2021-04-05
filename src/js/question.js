@@ -157,7 +157,9 @@ export class Question {
 
   static delete(id, token) {
     return fetch(
-      `https://ask-me-anything-cc5c2-default-rtdb.firebaseio.com/questions/${id}.json?auth=${token}`,
+      `https://ask-me-anything-cc5c2-default-rtdb.firebaseio.com/questions/${
+        authUid || registerUid
+      }/${id}.json?auth=${token}`,
       {
         method: "DELETE",
         headers: {
