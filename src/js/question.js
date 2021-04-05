@@ -1,6 +1,8 @@
 "use strict";
 
-import { userName } from "./register.js";
+// import { userName } from "./register.js";
+import { authUid } from "./log-in.js";
+import { registerUid } from "./register.js";
 
 const CONTENT_BLOCK = document.querySelector("#content");
 
@@ -52,16 +54,53 @@ export class Question {
     );
   }
 
-  static createList(questions, renderMethod) {
-    let listOfQuestions = Object.keys(questions)
+  static createListOfAllQuestions(users) {
+    let listOfQuestions = [];
+    let listOfQuestionsHTML = "";
+
+    Object.keys(users).map((user) => {
+      Object.keys(users[user]).map((question) => {
+        listOfQuestions.push({ [question]: users[user][question] });
+      });
+    });
+    listOfQuestions
       .sort((a, b) => {
-        return new Date(questions[b].date) - new Date(questions[a].date);
+        return (
+          new Date(Object.values(b)[0].date) -
+          new Date(Object.values(a)[0].date)
+        );
       })
-      .map((key) => {
-        return renderMethod(questions[key], key);
+      .forEach((question) => {
+        listOfQuestionsHTML += createStartQuestionCard(
+          Object.values(question)[0],
+          Object.keys(question)[0]
+        );
+      });
+    return listOfQuestionsHTML;
+  }
+
+  static createListOfUserQuestions(questions) {
+    let listOfQuestions = [];
+    let listOfQuestionsHTML = "";
+
+    Object.keys(questions).map((question) => {
+      listOfQuestions.push({ [question]: questions[question] });
+    });
+
+    listOfQuestions
+      .sort((a, b) => {
+        return (
+          new Date(Object.values(b)[0].date) -
+          new Date(Object.values(a)[0].date)
+        );
       })
-      .join(" ");
-    return listOfQuestions;
+      .forEach((question) => {
+        listOfQuestionsHTML += createUserQuestionCard(
+          Object.values(question)[0],
+          Object.keys(question)[0]
+        );
+      });
+    return listOfQuestionsHTML;
   }
 
   static renderList(listOfQuestionsHTML, target) {
@@ -73,13 +112,18 @@ export class Question {
       '<div class="mui--text-headline">Something went wrong! Try to reload the page...</div>';
   }
 
+  static renderMessage(target) {
+    target.innerHTML =
+      '<div class="mui--text-headline">You do not have any message yet.</div>';
+  }
+
   static getAllQuestions() {
     return fetch(
       `https://ask-me-anything-cc5c2-default-rtdb.firebaseio.com/questions.json`
     )
       .then((response) => response.json())
-      .then((questions) => {
-        return Question.createList(questions, createStartQuestionCard);
+      .then((users) => {
+        return Question.createListOfAllQuestions(users);
       })
       .then((data) => {
         return Question.renderList(data, CONTENT_BLOCK);
@@ -94,30 +138,21 @@ export class Question {
       "#userRecentQuestions"
     );
 
-    const getUserName = new Promise((resolve, reject) => {
-      const interval = setInterval(() => {
-        if (userName !== undefined) {
-          clearInterval(interval);
-          resolve(userName);
-        }
-      }, 200);
-    });
-
-    getUserName.then((data) => {
-      return fetch(
-        `https://ask-me-anything-cc5c2-default-rtdb.firebaseio.com/questions.json?orderBy="author"&equalTo="${data}"&print=pretty"`
-      )
-        .then((response) => response.json())
-        .then((questions) => {
-          return Question.createList(questions, createUserQuestionCard);
-        })
-        .then((data) => {
-          return Question.renderList(data, RECENT_QUESTIONS_BLOCK);
-        })
-        .catch(() => {
-          return Question.renderWarning(RECENT_QUESTIONS_BLOCK);
-        });
-    });
+    return fetch(
+      `https://ask-me-anything-cc5c2-default-rtdb.firebaseio.com/questions/${
+        authUid || registerUid
+      }.json`
+    )
+      .then((response) => response.json())
+      .then((questions) => {
+        return Question.createListOfUserQuestions(questions);
+      })
+      .then((data) => {
+        return Question.renderList(data, RECENT_QUESTIONS_BLOCK);
+      })
+      .catch(() => {
+        return Question.renderMessage(RECENT_QUESTIONS_BLOCK);
+      });
   }
 
   static delete(id, token) {

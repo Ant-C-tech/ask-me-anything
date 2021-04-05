@@ -103,6 +103,8 @@ export const activateLogInForm = () => {
 };
 
 export const logOut = () => {
+  authToken = '';
+  authUid = '';
   USER_NAME_BLOCK.innerHTML = "";
   Question.getAllQuestions();
   REGISTER_BUTTON.classList.remove("d-none");

@@ -16,6 +16,7 @@ export const LOGOUT_BUTTON = document.querySelector("#logOut");
 
 export let userName;
 export let registerToken;
+export let registerUid;
 
 export const registerContent = `<h3 class="mui--text-headline">Create new account</h3>
 <form id="registerForm" class="mui-form">
@@ -82,6 +83,7 @@ const registerFormHandler = (e) => {
 
     registerWithEmailAndPassword(userEmail, userPassword)
       .then((data) => {
+        registerUid = data.localId;
         registerToken = data.idToken;
         showUserNameGreeting(data.email);
         createContent(userWindowContent, activateUserWindowContent);
