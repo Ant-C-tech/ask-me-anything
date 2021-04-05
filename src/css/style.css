@@ -67,6 +67,18 @@ button {
   padding: 0;
 }
 
+.deleteQuestion{
+  background:#FFCDD2;
+  font-weight: bold;
+  color: rgb(114, 114, 114);
+}
+
+.editQuestion{
+  background:#F4FF81;
+  font-weight: bold;
+  color: rgb(114, 114, 114);
+}
+
 @media (min-width: 768px) {
   #sidebar {
     position: fixed;

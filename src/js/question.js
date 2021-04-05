@@ -24,7 +24,7 @@ const createStartQuestionCard = (question, id) => {
 
 const createUserQuestionCard = (question, id) => {
   return `<div class="mui-panel" data-id="${id}">
-  <p class="question__text">${question.text}</p>
+  <p id="questionText" class="question__text">${question.text}</p>
   <hr class="question__divider">
   <div class="mui--text-black-54">
     By <a href="#">${question.author}</a>
@@ -35,8 +35,8 @@ const createUserQuestionCard = (question, id) => {
     ${new Date(question.date).toLocaleTimeString()}
     </time>
   </div>
-  <button id="deleteQuestion" class="mui-btn mui-btn--accent" data-id="${id}">Delete</button>
-  <button id="editQuestion" class="mui-btn mui-btn--accent" data-id="${id}">Edit</button>
+  <button class="mui-btn mui-btn--accent deleteQuestion" data-type="deleteQuestion" data-id="${id}">Delete</button>
+  <button class="mui-btn mui-btn--accent editQuestion" data-type="editQuestion" data-id="${id}">Edit</button>
 </div>`;
 };
 
@@ -109,7 +109,7 @@ export class Question {
 
   static renderWarning(target) {
     target.innerHTML =
-      '<div class="mui--text-headline">Something went wrong! Try to reload the page...</div>';
+      '<div class="mui--text-headline">Something went wrong! Try to reload the page and try again...</div>';
   }
 
   static renderMessage(target) {
@@ -162,6 +162,21 @@ export class Question {
       }/${id}.json?auth=${token}`,
       {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
+
+  static edit(editedQuestion, id, token) {
+    return fetch(
+      `https://ask-me-anything-cc5c2-default-rtdb.firebaseio.com/questions/${
+        authUid || registerUid
+      }/${id}.json?auth=${token}`,
+      {
+        method: "PUT",
+        body: JSON.stringify(editedQuestion),
         headers: {
           "Content-Type": "application/json",
         },

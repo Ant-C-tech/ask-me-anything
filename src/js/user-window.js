@@ -1,5 +1,6 @@
 "use strict";
 import { isValidQuestion } from "./utils.js";
+import { createModal } from "./utils.js";
 import { Question } from "./question.js";
 import { userName } from "./register.js";
 import { registerToken } from "./register.js";
@@ -29,15 +30,26 @@ const submitFormHandler = (e) => {
   };
 
   newQuestionSubmit.disabled = true;
-  Question.create(newQuestion, authToken || registerToken, authUid || registerUid).then(() => {
-    newQuestionInput.value = "";
-    newQuestionInput.className = "";
-    Question.getRecentUserQuestions();
-  });
+  Question.create(
+    newQuestion,
+    authToken || registerToken,
+    authUid || registerUid
+  )
+    .then(() => {
+      newQuestionInput.value = "";
+      newQuestionInput.className = "";
+      Question.getRecentUserQuestions();
+    })
+    .catch(() => {
+      createModal(
+        '<div class="mui--text-headline">Something went wrong! Try to create your question again.</div>'
+      );
+    });
 };
 
-const inputFormHandler = () => {
-  if (isValidQuestion(newQuestionInput.value) && (authToken || registerToken)) {
+//  && (authToken || registerToken)
+const inputNewQuestionFormHandler = () => {
+  if (isValidQuestion(newQuestionInput.value)) {
     newQuestionSubmit.disabled = false;
     newQuestionForm.addEventListener("submit", submitFormHandler, {
       once: true,
@@ -46,14 +58,87 @@ const inputFormHandler = () => {
 };
 
 const userQuestionsHandler = ({ target }) => {
-  if (target.id === "deleteQuestion") {
+  if (
+    target.hasAttribute("data-type") &&
+    target.getAttribute("data-type") === "deleteQuestion"
+  ) {
     Question.delete(target.getAttribute("data-id"), authToken || registerToken)
       .then(() => {
         Question.getRecentUserQuestions();
       })
       .catch(() => {
-        console.log("Error");
+        createModal(
+          '<div class="mui--text-headline">Something went wrong! Try to delete your question again.</div>'
+        );
       });
+  } else if (
+    target.hasAttribute("data-type") &&
+    target.getAttribute("data-type") === "editQuestion"
+  ) {
+    const questionId = target.getAttribute("data-id");
+    const text = document.querySelector(
+      `div[data-id="${questionId}"] #questionText`
+    ).innerHTML;
+    createModal(`<form id="formEditQuestion" class="mui-form">
+                  <div class="mui-textfield mui-textfield--float-label">
+                    <input id="questionEditInput" type="text" value="${text}" required minlength="10" maxlength="256"/>
+                  </div>
+                  <button id="submitEditedQuestion" type="submit" class="mui-btn mui-btn--primary mui-btn--fab" disabled>
+                    DONE
+                  </button>
+                </form>`);
+    const questionEditForm = document.querySelector("#formEditQuestion");
+    const questionEditInput = questionEditForm.querySelector(
+      "#questionEditInput"
+    );
+    const questionEditSubmitBtn = questionEditForm.querySelector(
+      "#submitEditedQuestion"
+    );
+
+    const inputEditQuestionFormHandler = () => {
+      if (isValidQuestion(questionEditInput.value)) {
+        questionEditSubmitBtn.disabled = false;
+        questionEditForm.addEventListener(
+          "submit",
+          submitEditedQuestionFormHandler,
+          {
+            once: true,
+          }
+        );
+      }
+    };
+
+    const submitEditedQuestionFormHandler = (e) => {
+      e.preventDefault();
+
+      const editedText = questionEditInput.value;
+
+      const editedQuestion = {
+        author: userName,
+        text: editedText.trim(),
+        date: new Date().toJSON(),
+      };
+
+      mui.overlay("off");
+
+      Question.edit(editedQuestion, questionId, authToken || registerToken)
+        .then(() => {
+          Question.getRecentUserQuestions();
+        })
+        .catch(() => {
+          createModal(
+            '<div class="mui--text-headline">Something went wrong! Try to edit your question one more time.</div>'
+          );
+        });
+    };
+
+    questionEditInput.addEventListener("input", () => {
+      inputEditQuestionFormHandler(
+        questionEditForm,
+        questionEditInput,
+        questionEditSubmitBtn
+      );
+    });
   }
 };
 
@@ -91,6 +176,6 @@ export const userWindowContent = `<div class="mui-row">
 export const activateUserWindowContent = () => {
   getElements();
   Question.getRecentUserQuestions();
-  newQuestionInput.addEventListener("input", inputFormHandler);
+  newQuestionInput.addEventListener("input", inputNewQuestionFormHandler);
   userRecentQuestionsBlock.addEventListener("click", userQuestionsHandler);
 };

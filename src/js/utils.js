@@ -23,7 +23,7 @@ export const createModal = (content, callBack) => {
   // show modal
   mui.overlay("on", modalEl);
 
-  callBack();
+  callBack && callBack();
 };
 
 export const createContent = (content, callBack) => {
