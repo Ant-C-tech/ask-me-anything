@@ -34,7 +34,7 @@ button {
   padding: 15px;
 }
 
-.logo{
+.logo {
   width: 150px;
 }
 
@@ -46,8 +46,14 @@ button {
   margin-bottom: 3rem;
 }
 
-#logIn, #logOut, #register {
+#logIn,
+#logOut,
+#register {
   width: 120px;
+}
+
+.question{
+  background: #E3F2FD;
 }
 
 .question__divider {
@@ -67,14 +73,20 @@ button {
   padding: 0;
 }
 
-.deleteQuestion{
-  background:#FFCDD2;
+.deleteQuestion {
+  background: #ffcdd2;
   font-weight: bold;
   color: rgb(114, 114, 114);
 }
 
-.editQuestion{
-  background:#F4FF81;
+.editQuestion {
+  background: #f4ff81;
+  font-weight: bold;
+  color: rgb(114, 114, 114);
+}
+
+.answerQuestion {
+  background: #80DEEA;
   font-weight: bold;
   color: rgb(114, 114, 114);
 }

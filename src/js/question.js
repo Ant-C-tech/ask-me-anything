@@ -7,7 +7,7 @@ import { registerUid } from "./register.js";
 const CONTENT_BLOCK = document.querySelector("#content");
 
 const createStartQuestionCard = (question, id) => {
-  return `<div class="mui-panel" data-id="${id}">
+  return `<div class="mui-panel question" data-id="${id}">
   <p class="question__text">${question.text}</p>
   <hr class="question__divider">
   <div class="mui--text-black-54">
@@ -19,11 +19,12 @@ const createStartQuestionCard = (question, id) => {
     ${new Date(question.date).toLocaleTimeString()}
     </time>
   </div>
+  <button class="mui-btn mui-btn--accent answerQuestion" data-type="answerQuestion" data-id="${id}">Answer</button>
 </div>`;
 };
 
 const createUserQuestionCard = (question, id) => {
-  return `<div class="mui-panel" data-id="${id}">
+  return `<div class="mui-panel question" data-id="${id}">
   <p id="questionText" class="question__text">${question.text}</p>
   <hr class="question__divider">
   <div class="mui--text-black-54">
@@ -65,15 +66,16 @@ export class Question {
     });
     listOfQuestions
       .sort((a, b) => {
-        return (
-          new Date(Object.values(b)[0].date) -
-          new Date(Object.values(a)[0].date)
-        );
+        const firstQuestionDate = Object.values(a)[0].date;
+        const secondQuestionDate = Object.values(b)[0].date;
+        return new Date(secondQuestionDate) - new Date(firstQuestionDate);
       })
       .forEach((question) => {
+        const questionText = Object.values(question)[0];
+        const questionId = Object.keys(question)[0];
         listOfQuestionsHTML += createStartQuestionCard(
-          Object.values(question)[0],
-          Object.keys(question)[0]
+          questionText,
+          questionId
         );
       });
     return listOfQuestionsHTML;
@@ -89,16 +91,14 @@ export class Question {
 
     listOfQuestions
       .sort((a, b) => {
-        return (
-          new Date(Object.values(b)[0].date) -
-          new Date(Object.values(a)[0].date)
-        );
+        const firstQuestionDate = Object.values(a)[0].date;
+        const secondQuestionDate = Object.values(b)[0].date;
+        return new Date(secondQuestionDate) - new Date(firstQuestionDate);
       })
       .forEach((question) => {
-        listOfQuestionsHTML += createUserQuestionCard(
-          Object.values(question)[0],
-          Object.keys(question)[0]
-        );
+        const questionText = Object.values(question)[0];
+        const questionId = Object.keys(question)[0];
+        listOfQuestionsHTML += createUserQuestionCard(questionText, questionId);
       });
     return listOfQuestionsHTML;
   }
