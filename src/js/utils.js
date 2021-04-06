@@ -13,7 +13,7 @@ export const isValidPassword = (value) => {
 export const createModal = (content, callBack) => {
   // initialize modal element
   const modalEl = document.createElement("div");
-  modalEl.style.width = "400px";
+  modalEl.style.maxWidth = "400px";
   modalEl.style.height = "300px";
   modalEl.style.margin = "100px auto";
   modalEl.style.padding = "20px";

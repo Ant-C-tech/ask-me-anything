@@ -1,5 +1,6 @@
 "use strict";
 
+import { Answer } from "./answer.js";
 import { userName } from "./register.js";
 import { isValidQuestion } from "./utils.js";
 import { createModal } from "./utils.js";
@@ -23,12 +24,12 @@ const createStartQuestionCard = (question, id) => {
     ${new Date(question.date).toLocaleTimeString()}
     </time>
   </div>
-  <button class="mui-btn mui-btn--primary" data-type="answerQuestion" data-id="${id}" disabled>Answer</button>
+  <button class="mui-btn mui-btn--primary" disabled>Answer</button>
 </div>`;
 };
 
-const createActiveQuestionCard = (question, id) => {
-  return `<div class="mui-panel question" data-id="${id}">
+const createActiveQuestionCard = (question, questionId, authorId) => {
+  return `<div class="mui-panel question" data-id="${questionId}">
   <p class="question__text">${question.text}</p>
   <hr class="question__divider">
   <div class="mui--text-black-54">
@@ -40,7 +41,7 @@ const createActiveQuestionCard = (question, id) => {
     ${new Date(question.date).toLocaleTimeString()}
     </time>
   </div>
-  <button class="mui-btn mui-btn--primary" data-type="answerQuestion" data-id="${id}">Answer</button>
+  <button class="mui-btn mui-btn--primary" data-type="answerQuestion" data-questionId="${questionId}" data-authorId="${authorId}">Answer</button>
 </div>`;
 };
 
@@ -78,6 +79,7 @@ export class Question {
 
   static createListOfAllQuestions(users, renderMethod) {
     let listOfQuestions = [];
+    let listOfAnswers = [];
     let listOfQuestionsHTML = "";
 
     Object.keys(users).map((user) => {
@@ -85,6 +87,7 @@ export class Question {
         listOfQuestions.push({ [question]: users[user][question] });
       });
     });
+
     listOfQuestions
       .sort((a, b) => {
         const firstQuestionDate = Object.values(a)[0].date;
@@ -94,7 +97,18 @@ export class Question {
       .forEach((question) => {
         const questionText = Object.values(question)[0];
         const questionId = Object.keys(question)[0];
-        listOfQuestionsHTML += renderMethod(questionText, questionId);
+        const authorId = question[questionId]["authorId"];
+        const answers = question[questionId]["answers"];
+
+        Object.keys(answers).map((users) => {
+          console.log(users);
+          // Object.keys(answers[user]).map((answers) => {
+          //    console.log(answer);
+          //    listOfAnswers.push({ [question]: users[user][question] });
+          //  });
+        });
+
+        listOfQuestionsHTML += renderMethod(questionText, questionId, authorId);
       });
     return listOfQuestionsHTML;
   }
@@ -163,7 +177,62 @@ export class Question {
         target.hasAttribute("data-type") &&
         target.getAttribute("data-type") === "answerQuestion"
       ) {
-        alert("Work");
+        const questionId = target.getAttribute("data-questionId");
+        const authorId = target.getAttribute("data-authorId");
+        createModal(`<form id="formNewAnswer" class="mui-form">
+                      <div class="mui-textfield mui-textfield--float-label">
+                        <input id="answerInput" type="text"" required minlength="10" maxlength="256"/>
+                        <label for="answerInput">Your answer...</label>
+                      </div>
+                      <button id="submitAnswer" type="submit" class="mui-btn mui-btn--primary mui-btn--fab" disabled>
+                        DONE
+                      </button>
+                    </form>`);
+        const answerForm = document.querySelector("#formNewAnswer");
+        const answerInput = answerForm.querySelector("#answerInput");
+        const answerSubmitBtn = answerForm.querySelector("#submitAnswer");
+
+        const answerFormHandler = () => {
+          if (isValidQuestion(answerInput.value)) {
+            answerSubmitBtn.disabled = false;
+            answerForm.addEventListener("submit", submitAnswerFormHandler, {
+              once: true,
+            });
+          }
+        };
+
+        const submitAnswerFormHandler = (e) => {
+          e.preventDefault();
+
+          const answerText = answerInput.value;
+
+          const newAnswer = {
+            author: userName,
+            text: answerText.trim(),
+            date: new Date().toJSON(),
+          };
+
+          mui.overlay("off");
+
+          Answer.create(
+            newAnswer,
+            questionId,
+            authorId,
+            authToken || registerToken
+          )
+            .then(() => {
+              Question.getAllActiveQuestions();
+            })
+            .catch(() => {
+              createModal(
+                '<div class="mui--text-headline">Something went wrong! Try to edit your answer one more time.</div>'
+              );
+            });
+        };
+
+        answerInput.addEventListener("input", () => {
+          answerFormHandler();
+        });
       }
     });
   }
@@ -181,7 +250,10 @@ export class Question {
       })
       .then((data) => {
         const render = () => {
-          Question.renderContent('<div id="allQuestionsWrapper"></div>', CONTENT_BLOCK);
+          Question.renderContent(
+            '<div id="allQuestionsWrapper"></div>',
+            CONTENT_BLOCK
+          );
           const allQuestionsWrapper = CONTENT_BLOCK.querySelector(
             "#allQuestionsWrapper"
           );
@@ -242,7 +314,7 @@ export class Question {
           "#submitEditedQuestion"
         );
 
-        const inputEditQuestionFormHandler = () => {
+        const editQuestionFormHandler = () => {
           if (isValidQuestion(questionEditInput.value)) {
             questionEditSubmitBtn.disabled = false;
             questionEditForm.addEventListener(
@@ -280,11 +352,7 @@ export class Question {
         };
 
         questionEditInput.addEventListener("input", () => {
-          inputEditQuestionFormHandler(
-            questionEditForm,
-            questionEditInput,
-            questionEditSubmitBtn
-          );
+          editQuestionFormHandler();
         });
       }
     });
