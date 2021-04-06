@@ -1,8 +1,12 @@
 "use strict";
 
-// import { userName } from "./register.js";
+import { userName } from "./register.js";
+import { isValidQuestion } from "./utils.js";
+import { createModal } from "./utils.js";
 import { authUid } from "./log-in.js";
 import { registerUid } from "./register.js";
+import { registerToken } from "./register.js";
+import { authToken } from "./log-in.js";
 
 const CONTENT_BLOCK = document.querySelector("#content");
 
@@ -117,8 +121,8 @@ export class Question {
     return listOfQuestionsHTML;
   }
 
-  static renderList(listOfQuestionsHTML, target) {
-    target.innerHTML = listOfQuestionsHTML;
+  static renderContent(content, target) {
+    target.innerHTML = content;
   }
 
   static renderWarning(target) {
@@ -143,15 +147,18 @@ export class Question {
         );
       })
       .then((data) => {
-        return Question.renderList(data, CONTENT_BLOCK);
+        return Question.renderContent(data, CONTENT_BLOCK);
       })
       .catch(() => {
         return Question.renderWarning(CONTENT_BLOCK);
       });
   }
 
-  static activateAllQuestions () {
-    CONTENT_BLOCK.addEventListener("click", ({ target }) => {
+  static activateAllQuestions() {
+    const allQuestionsWrapper = CONTENT_BLOCK.querySelector(
+      "#allQuestionsWrapper"
+    );
+    allQuestionsWrapper.addEventListener("click", ({ target }) => {
       if (
         target.hasAttribute("data-type") &&
         target.getAttribute("data-type") === "answerQuestion"
@@ -173,14 +180,114 @@ export class Question {
         );
       })
       .then((data) => {
-        return Question.renderList(data, CONTENT_BLOCK);
+        const render = () => {
+          Question.renderContent('<div id="allQuestionsWrapper"></div>', CONTENT_BLOCK);
+          const allQuestionsWrapper = CONTENT_BLOCK.querySelector(
+            "#allQuestionsWrapper"
+          );
+          Question.renderContent(data, allQuestionsWrapper);
+        };
+        return render();
       })
-      .then((data) => {
+      .then(() => {
         return Question.activateAllQuestions();
       })
       .catch(() => {
         return Question.renderWarning(CONTENT_BLOCK);
       });
+  }
+
+  static activateUserQuestions() {
+    const userRecentQuestionsBlock = document.querySelector(
+      "#userRecentQuestions"
+    );
+    userRecentQuestionsBlock.addEventListener("click", ({ target }) => {
+      if (
+        target.hasAttribute("data-type") &&
+        target.getAttribute("data-type") === "deleteQuestion"
+      ) {
+        Question.delete(
+          target.getAttribute("data-id"),
+          authToken || registerToken
+        )
+          .then(() => {
+            Question.getRecentUserQuestions();
+          })
+          .catch(() => {
+            createModal(
+              '<div class="mui--text-headline">Something went wrong! Try to delete your question again.</div>'
+            );
+          });
+      } else if (
+        target.hasAttribute("data-type") &&
+        target.getAttribute("data-type") === "editQuestion"
+      ) {
+        const questionId = target.getAttribute("data-id");
+        const text = document.querySelector(
+          `div[data-id="${questionId}"] #questionText`
+        ).innerHTML;
+        createModal(`<form id="formEditQuestion" class="mui-form">
+                  <div class="mui-textfield mui-textfield--float-label">
+                    <input id="questionEditInput" type="text" value="${text}" required minlength="10" maxlength="256"/>
+                  </div>
+                  <button id="submitEditedQuestion" type="submit" class="mui-btn mui-btn--primary mui-btn--fab" disabled>
+                    DONE
+                  </button>
+                </form>`);
+        const questionEditForm = document.querySelector("#formEditQuestion");
+        const questionEditInput = questionEditForm.querySelector(
+          "#questionEditInput"
+        );
+        const questionEditSubmitBtn = questionEditForm.querySelector(
+          "#submitEditedQuestion"
+        );
+
+        const inputEditQuestionFormHandler = () => {
+          if (isValidQuestion(questionEditInput.value)) {
+            questionEditSubmitBtn.disabled = false;
+            questionEditForm.addEventListener(
+              "submit",
+              submitEditedQuestionFormHandler,
+              {
+                once: true,
+              }
+            );
+          }
+        };
+
+        const submitEditedQuestionFormHandler = (e) => {
+          e.preventDefault();
+
+          const editedText = questionEditInput.value;
+
+          const editedQuestion = {
+            author: userName,
+            text: editedText.trim(),
+            date: new Date().toJSON(),
+          };
+
+          mui.overlay("off");
+
+          Question.edit(editedQuestion, questionId, authToken || registerToken)
+            .then(() => {
+              Question.getRecentUserQuestions();
+            })
+            .catch(() => {
+              createModal(
+                '<div class="mui--text-headline">Something went wrong! Try to edit your question one more time.</div>'
+              );
+            });
+        };
+
+        questionEditInput.addEventListener("input", () => {
+          inputEditQuestionFormHandler(
+            questionEditForm,
+            questionEditInput,
+            questionEditSubmitBtn
+          );
+        });
+      }
+    });
   }
 
   static getRecentUserQuestions() {
@@ -198,7 +305,10 @@ export class Question {
         return Question.createListOfUserQuestions(questions);
       })
       .then((data) => {
-        return Question.renderList(data, RECENT_QUESTIONS_BLOCK);
+        return Question.renderContent(data, RECENT_QUESTIONS_BLOCK);
+      })
+      .then((data) => {
+        return Question.activateUserQuestions();
       })
       .catch(() => {
         return Question.renderMessage(RECENT_QUESTIONS_BLOCK);
