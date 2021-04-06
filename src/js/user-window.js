@@ -27,6 +27,7 @@ const submitFormHandler = (e) => {
     author: userName,
     text: newQuestionInput.value.trim(),
     date: new Date().toJSON(),
+    answers: "There is no answer yet.",
   };
 
   newQuestionSubmit.disabled = true;

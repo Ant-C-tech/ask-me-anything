@@ -17,7 +17,7 @@ import { REGISTER_BUTTON } from "./register.js";
 
 const changeScreen = () => {
   if (TOGGLE_SCREEN_BUTTON.innerText == "ALL") {
-    Question.getAllQuestions();
+    Question.getAllActiveQuestions();
     TOGGLE_SCREEN_BUTTON.innerHTML = "Profile";
   } else {
     createContent(userWindowContent, activateUserWindowContent);

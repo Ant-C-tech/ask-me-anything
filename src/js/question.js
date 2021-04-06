@@ -19,7 +19,24 @@ const createStartQuestionCard = (question, id) => {
     ${new Date(question.date).toLocaleTimeString()}
     </time>
   </div>
-  <button class="mui-btn mui-btn--accent answerQuestion" data-type="answerQuestion" data-id="${id}">Answer</button>
+  <button class="mui-btn mui-btn--primary" data-type="answerQuestion" data-id="${id}" disabled>Answer</button>
+</div>`;
+};
+
+const createActiveQuestionCard = (question, id) => {
+  return `<div class="mui-panel question" data-id="${id}">
+  <p class="question__text">${question.text}</p>
+  <hr class="question__divider">
+  <div class="mui--text-black-54">
+    By <a href="#">${question.author}</a>
+    <time datetime="${new Date(question.date).toLocaleDateString()}">
+    ${new Date(question.date).toLocaleDateString()}
+    </time>
+    <time datetime="${new Date(question.date).toLocaleTimeString()}">
+    ${new Date(question.date).toLocaleTimeString()}
+    </time>
+  </div>
+  <button class="mui-btn mui-btn--primary" data-type="answerQuestion" data-id="${id}">Answer</button>
 </div>`;
 };
 
@@ -55,7 +72,7 @@ export class Question {
     );
   }
 
-  static createListOfAllQuestions(users) {
+  static createListOfAllQuestions(users, renderMethod) {
     let listOfQuestions = [];
     let listOfQuestionsHTML = "";
 
@@ -73,10 +90,7 @@ export class Question {
       .forEach((question) => {
         const questionText = Object.values(question)[0];
         const questionId = Object.keys(question)[0];
-        listOfQuestionsHTML += createStartQuestionCard(
-          questionText,
-          questionId
-        );
+        listOfQuestionsHTML += renderMethod(questionText, questionId);
       });
     return listOfQuestionsHTML;
   }
@@ -123,10 +137,46 @@ export class Question {
     )
       .then((response) => response.json())
       .then((users) => {
-        return Question.createListOfAllQuestions(users);
+        return Question.createListOfAllQuestions(
+          users,
+          createStartQuestionCard
+        );
       })
       .then((data) => {
         return Question.renderList(data, CONTENT_BLOCK);
+      })
+      .catch(() => {
+        return Question.renderWarning(CONTENT_BLOCK);
+      });
+  }
+
+  static activateAllQuestions () {
+    CONTENT_BLOCK.addEventListener("click", ({ target }) => {
+      if (
+        target.hasAttribute("data-type") &&
+        target.getAttribute("data-type") === "answerQuestion"
+      ) {
+        alert("Work");
+      }
+    });
+  }
+
+  static getAllActiveQuestions() {
+    return fetch(
+      `https://ask-me-anything-cc5c2-default-rtdb.firebaseio.com/questions.json`
+    )
+      .then((response) => response.json())
+      .then((users) => {
+        return Question.createListOfAllQuestions(
+          users,
+          createActiveQuestionCard
+        );
+      })
+      .then((data) => {
+        return Question.renderList(data, CONTENT_BLOCK);
+      })
+      .then((data) => {
+        return Question.activateAllQuestions();
       })
       .catch(() => {
         return Question.renderWarning(CONTENT_BLOCK);
