@@ -11,8 +11,14 @@ import { authToken } from "./log-in.js";
 
 const CONTENT_BLOCK = document.querySelector("#content");
 
-const createStartQuestionCard = (question, id) => {
-  return `<div class="mui-panel question" data-id="${id}">
+const createStartQuestionCard = (
+  question,
+  questionId,
+  authorId,
+  listOfAnswers
+) => {
+
+  return `<div class="mui-panel question" data-id="${questionId}">
   <p class="question__text">${question.text}</p>
   <hr class="question__divider">
   <div class="mui--text-black-54">
@@ -25,6 +31,7 @@ const createStartQuestionCard = (question, id) => {
     </time>
   </div>
   <button class="mui-btn mui-btn--primary" disabled>Answer</button>
+  <div class="answers">${listOfAnswers}</div>
 </div>`;
 };
 
@@ -79,7 +86,6 @@ export class Question {
 
   static createListOfAllQuestions(users, renderMethod) {
     let listOfQuestions = [];
-    let listOfAnswers = [];
     let listOfQuestionsHTML = "";
 
     Object.keys(users).map((user) => {
@@ -95,20 +101,18 @@ export class Question {
         return new Date(secondQuestionDate) - new Date(firstQuestionDate);
       })
       .forEach((question) => {
-        const questionText = Object.values(question)[0];
+        const questionContent = Object.values(question)[0];
         const questionId = Object.keys(question)[0];
         const authorId = question[questionId]["authorId"];
         const answers = question[questionId]["answers"];
+        const listOfAnswersHTML = Answer.createListOfAllAnswers(answers);
 
-        Object.keys(answers).map((users) => {
-          console.log(users);
-          // Object.keys(answers[user]).map((answers) => {
-          //    console.log(answer);
-          //    listOfAnswers.push({ [question]: users[user][question] });
-          //  });
-        });
-
-        listOfQuestionsHTML += renderMethod(questionText, questionId, authorId);
+        listOfQuestionsHTML += renderMethod(
+          questionContent,
+          questionId,
+          authorId,
+          listOfAnswersHTML
+        );
       });
     return listOfQuestionsHTML;
   }
@@ -129,7 +133,9 @@ export class Question {
       })
       .forEach((question) => {
         const questionText = Object.values(question)[0];
+        console.log("questionText", questionText)
         const questionId = Object.keys(question)[0];
+        console.log("questionId", questionId)
         listOfQuestionsHTML += createUserQuestionCard(questionText, questionId);
       });
     return listOfQuestionsHTML;

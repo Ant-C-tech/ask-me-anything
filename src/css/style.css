@@ -52,15 +52,15 @@ button {
   width: 120px;
 }
 
-.question{
-  background: #E3F2FD;
+.question {
+  background: #e3f2fd;
 }
 
 .question__divider {
   margin: 5px 0;
 }
 
-.question__text {
+.question__text, .answer__text {
   font-size: 16px;
   color: rgb(114, 114, 114);
   font-weight: bold;
@@ -86,9 +86,18 @@ button {
 }
 
 .answerQuestion {
-  background: #80DEEA;
+  background: #80deea;
   font-weight: bold;
   color: rgb(114, 114, 114);
+}
+
+.answers {
+  width: 75%;
+  margin-left: auto;
+}
+
+.answer{
+  background: #FFEBEE;
 }
 
 @media (min-width: 768px) {
