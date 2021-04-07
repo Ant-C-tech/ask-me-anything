@@ -8,7 +8,7 @@ const createStartAnswerCard = (answer, answerId) => {
             <p class="answer__text">${answer.text}</p>
             <hr class="question__divider">
             <div class="mui--text-black-54">
-              By <a href="#">${answer.author}</a>
+              By <span class="nickName">${answer.author}</span>
               <time datetime="${new Date(answer.date).toLocaleDateString()}">
                 ${new Date(answer.date).toLocaleDateString()}
               </time>

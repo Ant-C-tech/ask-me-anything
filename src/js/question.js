@@ -17,12 +17,11 @@ const createStartQuestionCard = (
   authorId,
   listOfAnswers
 ) => {
-
   return `<div class="mui-panel question" data-id="${questionId}">
   <p class="question__text">${question.text}</p>
   <hr class="question__divider">
   <div class="mui--text-black-54">
-    By <a href="#">${question.author}</a>
+    By <span class="nickName">${question.author}</span>
     <time datetime="${new Date(question.date).toLocaleDateString()}">
     ${new Date(question.date).toLocaleDateString()}
     </time>
@@ -104,8 +103,15 @@ export class Question {
         const questionContent = Object.values(question)[0];
         const questionId = Object.keys(question)[0];
         const authorId = question[questionId]["authorId"];
-        const answers = question[questionId]["answers"];
-        const listOfAnswersHTML = Answer.createListOfAllAnswers(answers);
+
+        let listOfAnswersHTML;
+
+        if (question[questionId]["answers"] !== undefined) {
+          const answers = question[questionId]["answers"];
+          listOfAnswersHTML = Answer.createListOfAllAnswers(answers);
+        } else {
+          listOfAnswersHTML = "<div class='noAnswerMessage'>There is no answer yet.</div>";
+        }
 
         listOfQuestionsHTML += renderMethod(
           questionContent,
@@ -133,9 +139,9 @@ export class Question {
       })
       .forEach((question) => {
         const questionText = Object.values(question)[0];
-        console.log("questionText", questionText)
+        console.log("questionText", questionText);
         const questionId = Object.keys(question)[0];
-        console.log("questionId", questionId)
+        console.log("questionId", questionId);
         listOfQuestionsHTML += createUserQuestionCard(questionText, questionId);
       });
     return listOfQuestionsHTML;
