@@ -34,7 +34,12 @@ const createStartQuestionCard = (
 </div>`;
 };
 
-const createActiveQuestionCard = (question, questionId, authorId) => {
+const createActiveQuestionCard = (
+  question,
+  questionId,
+  authorId,
+  listOfAnswers
+) => {
   return `<div class="mui-panel question" data-id="${questionId}">
   <p class="question__text">${question.text}</p>
   <hr class="question__divider">
@@ -48,6 +53,7 @@ const createActiveQuestionCard = (question, questionId, authorId) => {
     </time>
   </div>
   <button class="mui-btn mui-btn--primary" data-type="answerQuestion" data-questionId="${questionId}" data-authorId="${authorId}">Answer</button>
+  <div class="answers">${listOfAnswers}</div>
 </div>`;
 };
 
