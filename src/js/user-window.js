@@ -11,13 +11,11 @@ import { registerUid } from "./register.js";
 let newQuestionForm;
 let newQuestionInput;
 let newQuestionSubmit;
-// let userRecentQuestionsBlock;
 
 const getElements = () => {
   newQuestionForm = document.querySelector("#formNewQuestion");
   newQuestionInput = newQuestionForm.querySelector("#questionInput");
   newQuestionSubmit = newQuestionForm.querySelector("#submitQuestion");
-  // userRecentQuestionsBlock = document.querySelector("#userRecentQuestions");
 };
 
 const submitFormHandler = (e) => {
@@ -93,5 +91,4 @@ export const activateUserWindowContent = () => {
   getElements();
   Question.getRecentUserQuestions();
   newQuestionInput.addEventListener("input", inputNewQuestionFormHandler);
-  // userRecentQuestionsBlock.addEventListener("click", userQuestionsHandler);
 };

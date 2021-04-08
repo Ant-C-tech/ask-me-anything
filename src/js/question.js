@@ -44,7 +44,7 @@ const createActiveQuestionCard = (
   <p class="question__text">${question.text}</p>
   <hr class="question__divider">
   <div class="mui--text-black-54">
-    By <a href="#">${question.author}</a>
+    By <span class="nickName">${question.author}</span>
     <time datetime="${new Date(question.date).toLocaleDateString()}">
     ${new Date(question.date).toLocaleDateString()}
     </time>
@@ -67,7 +67,7 @@ const createUserQuestionCard = (
   <p id="questionText" class="question__text">${question.text}</p>
   <hr class="question__divider">
   <div class="mui--text-black-54">
-    By <a href="#">${question.author}</a>
+    By <span class="nickName">${question.author}</span>
     <time datetime="${new Date(question.date).toLocaleDateString()}">
     ${new Date(question.date).toLocaleDateString()}
     </time>
@@ -75,8 +75,8 @@ const createUserQuestionCard = (
     ${new Date(question.date).toLocaleTimeString()}
     </time>
   </div>
-  <button class="mui-btn mui-btn--accent deleteQuestion" data-type="deleteQuestion" data-id="${questionId}">Delete</button>
-  <button class="mui-btn mui-btn--accent editQuestion" data-type="editQuestion" data-id="${questionId}">Edit</button>
+  <button class="mui-btn mui-btn--accent delete" data-type="deleteQuestion" data-id="${questionId}">Delete</button>
+  <button class="mui-btn mui-btn--accent edit" data-type="editQuestion" data-id="${questionId}">Edit</button>
   <div class="answers">${listOfAnswers}</div>
 </div>`;
 };
@@ -250,6 +250,7 @@ export class Question {
             author: userName,
             text: answerText.trim(),
             date: new Date().toJSON(),
+            authorId: authUid || registerUid,
           };
 
           mui.overlay("off");

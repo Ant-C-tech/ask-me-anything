@@ -106,3 +106,8 @@ export const activateRegisterForm = () => {
   const registerButton = document.querySelector("#registerBtn");
   registerButton.addEventListener("click", registerFormHandler, { once: true });
 };
+
+export const clearRegisterAttribute = () => {
+  registerToken = "";
+  registerUid = "";
+};

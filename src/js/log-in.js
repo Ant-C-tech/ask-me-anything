@@ -7,6 +7,7 @@ import { userWindowContent } from "./user-window.js";
 import { activateUserWindowContent } from "./user-window.js";
 import { Question } from "./question.js";
 import { API_KEY } from "./register.js";
+import { clearRegisterAttribute } from "./register.js";
 
 import { TOGGLE_SCREEN_BUTTON } from "./register.js";
 import { LOGIN_BUTTON } from "./register.js";
@@ -105,6 +106,7 @@ export const activateLogInForm = () => {
 export const logOut = () => {
   authToken = '';
   authUid = '';
+  clearRegisterAttribute();
   USER_NAME_BLOCK.innerHTML = "";
   Question.getAllQuestions();
   REGISTER_BUTTON.classList.remove("d-none");

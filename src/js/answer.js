@@ -19,21 +19,23 @@ const createCommonAnswerCard = (answer, answerId) => {
           </div>`;
 };
 
-// const createUserAnswerCard = (answer, answerId) => {
-//   return `<div class="mui-panel answer" data-id="${answerId}">
-//             <p class="answer__text">${answer.text}</p>
-//             <hr class="question__divider">
-//             <div class="mui--text-black-54">
-//               By <span class="nickName">${answer.author}</span>
-//               <time datetime="${new Date(answer.date).toLocaleDateString()}">
-//                 ${new Date(answer.date).toLocaleDateString()}
-//               </time>
-//               <time datetime="${new Date(answer.date).toLocaleTimeString()}">
-//               ${new Date(answer.date).toLocaleTimeString()}
-//               </time>
-//             </div>
-//           </div>`;
-// };
+const createUserAnswerCard = (answer, answerId) => {
+  return `<div class="mui-panel answer" data-id="${answerId}">
+            <p class="answer__text">${answer.text}</p>
+            <hr class="question__divider">
+            <div class="mui--text-black-54">
+              By <span class="nickName">${answer.author}</span>
+              <time datetime="${new Date(answer.date).toLocaleDateString()}">
+                ${new Date(answer.date).toLocaleDateString()}
+              </time>
+              <time datetime="${new Date(answer.date).toLocaleTimeString()}">
+              ${new Date(answer.date).toLocaleTimeString()}
+              </time>
+            </div>
+            <button class="mui-btn mui-btn--accent delete" data-type="deleteAnswer" data-id="${answerId}">Delete</button>
+            <button class="mui-btn mui-btn--accent edit" data-type="editAnswer" data-id="${answerId}">Edit</button>
+          </div>`;
+};
 
 export class Answer {
   static create(newAnswer, questionId, authorId, token) {
@@ -73,7 +75,14 @@ export class Answer {
         const answerContent = Object.values(answer)[0];
         const answerId = Object.keys(answer)[0];
         const authorId = answer[answerId]["authorId"];
-        listOfAnswersHTML += createCommonAnswerCard(answerContent, answerId);
+        if (authUid == authorId || registerUid == authorId) {
+          listOfAnswersHTML += createUserAnswerCard(answerContent, answerId);
+        } else {
+          listOfAnswersHTML += createCommonAnswerCard(
+            answerContent,
+            answerId
+          );
+        }
       });
 
     return listOfAnswersHTML;
