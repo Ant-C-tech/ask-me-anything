@@ -57,8 +57,13 @@ const createActiveQuestionCard = (
 </div>`;
 };
 
-const createUserQuestionCard = (question, id) => {
-  return `<div class="mui-panel question" data-id="${id}">
+const createUserQuestionCard = (
+  question,
+  questionId,
+  authorId,
+  listOfAnswers
+) => {
+  return `<div class="mui-panel question" data-id="${questionId}">
   <p id="questionText" class="question__text">${question.text}</p>
   <hr class="question__divider">
   <div class="mui--text-black-54">
@@ -70,8 +75,9 @@ const createUserQuestionCard = (question, id) => {
     ${new Date(question.date).toLocaleTimeString()}
     </time>
   </div>
-  <button class="mui-btn mui-btn--accent deleteQuestion" data-type="deleteQuestion" data-id="${id}">Delete</button>
-  <button class="mui-btn mui-btn--accent editQuestion" data-type="editQuestion" data-id="${id}">Edit</button>
+  <button class="mui-btn mui-btn--accent deleteQuestion" data-type="deleteQuestion" data-id="${questionId}">Delete</button>
+  <button class="mui-btn mui-btn--accent editQuestion" data-type="editQuestion" data-id="${questionId}">Edit</button>
+  <div class="answers">${listOfAnswers}</div>
 </div>`;
 };
 
@@ -116,7 +122,8 @@ export class Question {
           const answers = question[questionId]["answers"];
           listOfAnswersHTML = Answer.createListOfAllAnswers(answers);
         } else {
-          listOfAnswersHTML = "<div class='noAnswerMessage'>There is no answer yet.</div>";
+          listOfAnswersHTML =
+            "<div class='noAnswerMessage'>There is no answer yet.</div>";
         }
 
         listOfQuestionsHTML += renderMethod(
@@ -144,11 +151,26 @@ export class Question {
         return new Date(secondQuestionDate) - new Date(firstQuestionDate);
       })
       .forEach((question) => {
-        const questionText = Object.values(question)[0];
-        console.log("questionText", questionText);
+        const questionContent = Object.values(question)[0];
         const questionId = Object.keys(question)[0];
-        console.log("questionId", questionId);
-        listOfQuestionsHTML += createUserQuestionCard(questionText, questionId);
+        const authorId = question[questionId]["authorId"];
+
+        let listOfAnswersHTML;
+
+        if (question[questionId]["answers"] !== undefined) {
+          const answers = question[questionId]["answers"];
+          listOfAnswersHTML = Answer.createListOfAllAnswers(answers);
+        } else {
+          listOfAnswersHTML =
+            "<div class='noAnswerMessage'>There is no answer yet.</div>";
+        }
+
+        listOfQuestionsHTML += createUserQuestionCard(
+          questionContent,
+          questionId,
+          authorId,
+          listOfAnswersHTML
+        );
       });
     return listOfQuestionsHTML;
   }
@@ -421,7 +443,7 @@ export class Question {
         authUid || registerUid
       }/${id}.json?auth=${token}`,
       {
-        method: "PUT",
+        method: "PATCH",
         body: JSON.stringify(editedQuestion),
         headers: {
           "Content-Type": "application/json",

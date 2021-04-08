@@ -3,7 +3,7 @@
 import { authUid } from "./log-in.js";
 import { registerUid } from "./register.js";
 
-const createStartAnswerCard = (answer, answerId) => {
+const createCommonAnswerCard = (answer, answerId) => {
   return `<div class="mui-panel answer" data-id="${answerId}">
             <p class="answer__text">${answer.text}</p>
             <hr class="question__divider">
@@ -18,6 +18,22 @@ const createStartAnswerCard = (answer, answerId) => {
             </div>
           </div>`;
 };
+
+// const createUserAnswerCard = (answer, answerId) => {
+//   return `<div class="mui-panel answer" data-id="${answerId}">
+//             <p class="answer__text">${answer.text}</p>
+//             <hr class="question__divider">
+//             <div class="mui--text-black-54">
+//               By <span class="nickName">${answer.author}</span>
+//               <time datetime="${new Date(answer.date).toLocaleDateString()}">
+//                 ${new Date(answer.date).toLocaleDateString()}
+//               </time>
+//               <time datetime="${new Date(answer.date).toLocaleTimeString()}">
+//               ${new Date(answer.date).toLocaleTimeString()}
+//               </time>
+//             </div>
+//           </div>`;
+// };
 
 export class Answer {
   static create(newAnswer, questionId, authorId, token) {
@@ -57,7 +73,7 @@ export class Answer {
         const answerContent = Object.values(answer)[0];
         const answerId = Object.keys(answer)[0];
         const authorId = answer[answerId]["authorId"];
-        listOfAnswersHTML += createStartAnswerCard(answerContent, answerId);
+        listOfAnswersHTML += createCommonAnswerCard(answerContent, answerId);
       });
 
     return listOfAnswersHTML;
