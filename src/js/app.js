@@ -17,24 +17,45 @@ import { REGISTER_BUTTON } from "./register.js";
 
 const changeScreen = () => {
   if (TOGGLE_SCREEN_BUTTON.innerText == "ALL") {
-    Question.getAllActiveQuestions();
-    TOGGLE_SCREEN_BUTTON.innerHTML = "Profile";
+    const getAllActiveQuestions = new Promise((resolve) => {
+      TOGGLE_SCREEN_BUTTON.classList.add("d-none");
+      resolve(Question.getAllActiveQuestions());
+    });
+
+    getAllActiveQuestions
+      .then(() => {
+        TOGGLE_SCREEN_BUTTON.classList.remove("d-none");
+        TOGGLE_SCREEN_BUTTON.innerHTML = "Profile";
+      })
+      .catch(() => {
+        return Question.renderWarning(CONTENT_BLOCK);
+      });
   } else {
-    createContent(userWindowContent, activateUserWindowContent);
-    TOGGLE_SCREEN_BUTTON.innerHTML = "ALL";
+    const showUserWindow = new Promise((resolve) => {
+      TOGGLE_SCREEN_BUTTON.classList.add("d-none");
+      resolve(createContent(userWindowContent, activateUserWindowContent));
+    });
+
+    showUserWindow
+      .then(() => {
+        TOGGLE_SCREEN_BUTTON.classList.remove("d-none");
+        TOGGLE_SCREEN_BUTTON.innerHTML = "ALL";
+      })
+      .catch(() => {
+        return Question.renderWarning(CONTENT_BLOCK);
+      });
   }
 };
 
-window.addEventListener("load", Question.getAllQuestions);
-
+window.addEventListener("load", Question.getAllQuestions, { once: true });
 document.addEventListener("click", ({ target }) => {
   if (target === LOGIN_BUTTON) {
     createModal(logInContent, activateLogInForm);
   } else if (target === LOGOUT_BUTTON) {
     logOut();
-  } else if (target === TOGGLE_SCREEN_BUTTON) {
-    changeScreen();
   } else if (target === REGISTER_BUTTON) {
     createModal(registerContent, activateRegisterForm);
+  } else if (target === TOGGLE_SCREEN_BUTTON) {
+    changeScreen();
   }
 });
