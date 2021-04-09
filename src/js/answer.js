@@ -2,6 +2,8 @@
 
 import { authUid } from "./log-in.js";
 import { registerUid } from "./register.js";
+import { registerToken } from "./register.js";
+import { authToken } from "./log-in.js";
 
 const createCommonAnswerCard = (answer, answerId) => {
   return `<div class="mui-panel answer" data-id="${answerId}">
@@ -19,7 +21,12 @@ const createCommonAnswerCard = (answer, answerId) => {
           </div>`;
 };
 
-const createUserAnswerCard = (answer, answerId) => {
+const createUserAnswerCard = (
+  answer,
+  questionAuthorId,
+  questionId,
+  answerId
+) => {
   return `<div class="mui-panel answer" data-id="${answerId}">
             <p class="answer__text">${answer.text}</p>
             <hr class="question__divider">
@@ -32,8 +39,8 @@ const createUserAnswerCard = (answer, answerId) => {
               ${new Date(answer.date).toLocaleTimeString()}
               </time>
             </div>
-            <button class="mui-btn mui-btn--accent delete" data-type="deleteAnswer" data-id="${answerId}">Delete</button>
-            <button class="mui-btn mui-btn--accent edit" data-type="editAnswer" data-id="${answerId}">Edit</button>
+            <button class="mui-btn mui-btn--accent delete" data-type="deleteAnswer" data-questionAuthor="${questionAuthorId}" data-questionId="${questionId}" data-answerId="${answerId}">Delete</button>
+            <button class="mui-btn mui-btn--accent edit" data-type="editAnswer" data-questionAuthor="${questionAuthorId}" data-questionId="${questionId}" data-answerId="${answerId}">Edit</button>
           </div>`;
 };
 
@@ -53,7 +60,7 @@ export class Answer {
     );
   }
 
-  static createListOfAllAnswers(answers) {
+  static createListOfAllAnswers(answers, questionAuthorId, questionId) {
     let listOfAnswers = [];
     let listOfAnswersHTML = "";
 
@@ -76,15 +83,35 @@ export class Answer {
         const answerId = Object.keys(answer)[0];
         const authorId = answer[answerId]["authorId"];
         if (authUid == authorId || registerUid == authorId) {
-          listOfAnswersHTML += createUserAnswerCard(answerContent, answerId);
+          listOfAnswersHTML += createUserAnswerCard(
+            answerContent,
+            questionAuthorId,
+            questionId,
+            answerId
+          );
         } else {
           listOfAnswersHTML += createCommonAnswerCard(
             answerContent,
+            questionId,
             answerId
           );
         }
       });
 
     return listOfAnswersHTML;
+  }
+
+  static delete(questionAuthor, questionId, answerId) {
+    return fetch(
+      `https://ask-me-anything-cc5c2-default-rtdb.firebaseio.com/questions/${questionAuthor}/${questionId}/answers/${
+        authUid || registerUid
+      }/${answerId}.json?auth=${authToken || registerToken}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
   }
 }

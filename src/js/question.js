@@ -114,13 +114,17 @@ export class Question {
       .forEach((question) => {
         const questionContent = Object.values(question)[0];
         const questionId = Object.keys(question)[0];
-        const authorId = question[questionId]["authorId"];
+        const questionAuthorId = question[questionId]["authorId"];
 
         let listOfAnswersHTML;
 
         if (question[questionId]["answers"] !== undefined) {
           const answers = question[questionId]["answers"];
-          listOfAnswersHTML = Answer.createListOfAllAnswers(answers);
+          listOfAnswersHTML = Answer.createListOfAllAnswers(
+            answers,
+            questionAuthorId,
+            questionId
+          );
         } else {
           listOfAnswersHTML =
             "<div class='noAnswerMessage'>There is no answer yet.</div>";
@@ -129,7 +133,7 @@ export class Question {
         listOfQuestionsHTML += renderMethod(
           questionContent,
           questionId,
-          authorId,
+          questionAuthorId,
           listOfAnswersHTML
         );
       });
@@ -266,7 +270,7 @@ export class Question {
             })
             .catch(() => {
               createModal(
-                '<div class="mui--text-headline">Something went wrong! Try to edit your answer one more time.</div>'
+                '<div class="mui--text-headline">Something went wrong! Try to create your answer one more time.</div>'
               );
             });
         };
@@ -274,6 +278,23 @@ export class Question {
         answerInput.addEventListener("input", () => {
           answerFormHandler();
         });
+      } else if (
+        target.hasAttribute("data-type") &&
+        target.getAttribute("data-type") === "deleteAnswer"
+      ) {
+        Answer.delete(
+          target.getAttribute("data-questionAuthor"),
+          target.getAttribute("data-questionId"),
+          target.getAttribute("data-answerId")
+        )
+          .then(() => {
+            Question.getAllActiveQuestions();
+          })
+          .catch(() => {
+            createModal(
+              '<div class="mui--text-headline">Something went wrong! Try to delete your answer one more time.</div>'
+            );
+          });
       }
     });
   }
