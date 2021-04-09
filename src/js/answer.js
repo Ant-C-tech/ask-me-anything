@@ -6,8 +6,8 @@ import { registerToken } from "./register.js";
 import { authToken } from "./log-in.js";
 
 const createCommonAnswerCard = (answer, answerId) => {
-  return `<div class="mui-panel answer" data-id="${answerId}">
-            <p class="answer__text">${answer.text}</p>
+  return `<div class="mui-panel answer" data-answerId="${answerId}">
+            <p class="answer__text" data-content="answerText">${answer.text}</p>
             <hr class="question__divider">
             <div class="mui--text-black-54">
               By <span class="nickName">${answer.author}</span>
@@ -27,8 +27,8 @@ const createUserAnswerCard = (
   questionId,
   answerId
 ) => {
-  return `<div class="mui-panel answer" data-id="${answerId}">
-            <p class="answer__text">${answer.text}</p>
+  return `<div class="mui-panel answer" data-answerId="${answerId}">
+            <p class="answer__text" data-content="answerText">${answer.text}</p>
             <hr class="question__divider">
             <div class="mui--text-black-54">
               By <span class="nickName">${answer.author}</span>
@@ -108,6 +108,21 @@ export class Answer {
       }/${answerId}.json?auth=${authToken || registerToken}`,
       {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
+
+  static edit(questionAuthor, questionId, answerId, editedAnswer) {
+    return fetch(
+      `https://ask-me-anything-cc5c2-default-rtdb.firebaseio.com/questions/${questionAuthor}/${questionId}/answers/${
+        authUid || registerUid
+      }/${answerId}.json?auth=${authToken || registerToken}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify(editedAnswer),
         headers: {
           "Content-Type": "application/json",
         },

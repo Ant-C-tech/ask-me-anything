@@ -64,7 +64,7 @@ const createUserQuestionCard = (
   listOfAnswers
 ) => {
   return `<div class="mui-panel question" data-id="${questionId}">
-  <p id="questionText" class="question__text">${question.text}</p>
+  <p class="question__text" data-content="questionText">${question.text}</p>
   <hr class="question__divider">
   <div class="mui--text-black-54">
     By <span class="nickName">${question.author}</span>
@@ -82,6 +82,20 @@ const createUserQuestionCard = (
 };
 
 export class Question {
+  static renderContent(content, target) {
+    target.innerHTML = content;
+  }
+
+  static renderWarning(target) {
+    target.innerHTML =
+      '<div class="mui--text-headline">Something went wrong! Try to reload the page and try again...</div>';
+  }
+
+  static renderMessage(target) {
+    target.innerHTML =
+      '<div class="mui--text-headline">You do not have any message yet.</div>';
+  }
+
   static create(newQuestion, token, uId) {
     return fetch(
       `https://ask-me-anything-cc5c2-default-rtdb.firebaseio.com/questions/${uId}.json?auth=${token}`,
@@ -181,20 +195,6 @@ export class Question {
         );
       });
     return listOfQuestionsHTML;
-  }
-
-  static renderContent(content, target) {
-    target.innerHTML = content;
-  }
-
-  static renderWarning(target) {
-    target.innerHTML =
-      '<div class="mui--text-headline">Something went wrong! Try to reload the page and try again...</div>';
-  }
-
-  static renderMessage(target) {
-    target.innerHTML =
-      '<div class="mui--text-headline">You do not have any message yet.</div>';
   }
 
   static getAllQuestions() {
@@ -299,6 +299,87 @@ export class Question {
               '<div class="mui--text-headline">Something went wrong! Try to delete your answer one more time.</div>'
             );
           });
+      } else if (
+        target.hasAttribute("data-type") &&
+        target.getAttribute("data-type") === "editAnswer"
+      ) {
+        // Answer.delete(
+        //   target.getAttribute("data-questionAuthor"),
+        //   target.getAttribute("data-questionId"),
+        //   target.getAttribute("data-answerId")
+        // )
+        //   .then(() => {
+        //     Question.getAllActiveQuestions();
+        //   })
+        //   .catch(() => {
+        //     createModal(
+        //       '<div class="mui--text-headline">Something went wrong! Try to delete your answer one more time.</div>'
+        //     );
+        //   });
+
+        const questionAuthorId = target.getAttribute("data-questionAuthor");
+        const questionId = target.getAttribute("data-questionId");
+        const answerId = target.getAttribute("data-answerId");
+
+        const text = document.querySelector(
+          `div[data-answerId="${answerId}"] [data-content="answerText"]`
+        ).innerHTML;
+        createModal(`<form id="formEditAnswer" class="mui-form">
+                  <div class="mui-textfield mui-textfield--float-label">
+                    <input id="answerEditInput" type="text" value="${text}" required minlength="10" maxlength="256"/>
+                  </div>
+                  <button id="submitEditedAnswer" type="submit" class="mui-btn mui-btn--primary mui-btn--fab" disabled>
+                    DONE
+                  </button>
+                </form>`);
+        const answerEditForm = document.querySelector("#formEditAnswer");
+        const answerEditInput = answerEditForm.querySelector(
+          "#answerEditInput"
+        );
+        const answerEditSubmitBtn = answerEditForm.querySelector(
+          "#submitEditedAnswer"
+        );
+
+        const editAnswerFormHandler = () => {
+          if (isValidQuestion(answerEditInput.value)) {
+            answerEditSubmitBtn.disabled = false;
+            answerEditForm.addEventListener(
+              "submit",
+              submitEditedAnswerFormHandler,
+              {
+                once: true,
+              }
+            );
+          }
+        };
+
+        const submitEditedAnswerFormHandler = (e) => {
+          e.preventDefault();
+
+          const editedText = answerEditInput.value;
+
+          const editedAnswer = {
+            author: userName,
+            text: editedText.trim(),
+            date: new Date().toJSON(),
+          };
+
+          mui.overlay("off");
+
+          Answer.edit(questionAuthorId, questionId, answerId, editedAnswer)
+            .then(() => {
+              Question.getAllActiveQuestions();
+            })
+            .catch(() => {
+              createModal(
+                '<div class="mui--text-headline">Something went wrong! Try to edit your answer one more time.</div>'
+              );
+            });
+        };
+
+         answerEditInput.addEventListener("input", () => {
+           editAnswerFormHandler();
+         });
       }
     });
   }
@@ -362,7 +443,7 @@ export class Question {
       ) {
         const questionId = target.getAttribute("data-id");
         const text = document.querySelector(
-          `div[data-id="${questionId}"] #questionText`
+          `div[data-id="${questionId}"] [data-content="questionText"]`
         ).innerHTML;
         createModal(`<form id="formEditQuestion" class="mui-form">
                   <div class="mui-textfield mui-textfield--float-label">
