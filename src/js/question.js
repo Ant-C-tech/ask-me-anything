@@ -303,19 +303,6 @@ export class Question {
         target.hasAttribute("data-type") &&
         target.getAttribute("data-type") === "editAnswer"
       ) {
-        // Answer.delete(
-        //   target.getAttribute("data-questionAuthor"),
-        //   target.getAttribute("data-questionId"),
-        //   target.getAttribute("data-answerId")
-        // )
-        //   .then(() => {
-        //     Question.getAllActiveQuestions();
-        //   })
-        //   .catch(() => {
-        //     createModal(
-        //       '<div class="mui--text-headline">Something went wrong! Try to delete your answer one more time.</div>'
-        //     );
-        //   });
 
         const questionAuthorId = target.getAttribute("data-questionAuthor");
         const questionId = target.getAttribute("data-questionId");
@@ -518,6 +505,73 @@ export class Question {
               '<div class="mui--text-headline">Something went wrong! Try to delete your answer one more time.</div>'
             );
           });
+      } else if (
+        target.hasAttribute("data-type") &&
+        target.getAttribute("data-type") === "editAnswer"
+      ) {
+        const questionAuthorId = target.getAttribute("data-questionAuthor");
+        const questionId = target.getAttribute("data-questionId");
+        const answerId = target.getAttribute("data-answerId");
+
+        const text = document.querySelector(
+          `div[data-answerId="${answerId}"] [data-content="answerText"]`
+        ).innerHTML;
+        createModal(`<form id="formEditAnswer" class="mui-form">
+                  <div class="mui-textfield mui-textfield--float-label">
+                    <input id="answerEditInput" type="text" value="${text}" required minlength="10" maxlength="256"/>
+                  </div>
+                  <button id="submitEditedAnswer" type="submit" class="mui-btn mui-btn--primary mui-btn--fab" disabled>
+                    DONE
+                  </button>
+                </form>`);
+        const answerEditForm = document.querySelector("#formEditAnswer");
+        const answerEditInput = answerEditForm.querySelector(
+          "#answerEditInput"
+        );
+        const answerEditSubmitBtn = answerEditForm.querySelector(
+          "#submitEditedAnswer"
+        );
+
+        const editAnswerFormHandler = () => {
+          if (isValidQuestion(answerEditInput.value)) {
+            answerEditSubmitBtn.disabled = false;
+            answerEditForm.addEventListener(
+              "submit",
+              submitEditedAnswerFormHandler,
+              {
+                once: true,
+              }
+            );
+          }
+        };
+
+        const submitEditedAnswerFormHandler = (e) => {
+          e.preventDefault();
+
+          const editedText = answerEditInput.value;
+
+          const editedAnswer = {
+            author: userName,
+            text: editedText.trim(),
+            date: new Date().toJSON(),
+          };
+
+          mui.overlay("off");
+
+          Answer.edit(questionAuthorId, questionId, answerId, editedAnswer)
+            .then(() => {
+              Question.getRecentUserQuestions();
+            })
+            .catch(() => {
+              createModal(
+                '<div class="mui--text-headline">Something went wrong! Try to edit your answer one more time.</div>'
+              );
+            });
+        };
+
+        answerEditInput.addEventListener("input", () => {
+          editAnswerFormHandler();
+        });
       }
     });
   }
