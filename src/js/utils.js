@@ -3,7 +3,7 @@
 const CONTENT_BLOCK = document.querySelector("#content");
 
 export const isValidQuestion = (value) => {
-  return value.length >= 10 && value.length <= 256;
+  return value.length >= 1 && value.length <= 500;
 };
 
 export const isValidPassword = (value) => {

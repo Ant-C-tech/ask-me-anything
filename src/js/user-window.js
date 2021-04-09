@@ -68,7 +68,7 @@ export const userWindowContent = `<div class="mui-row">
 
           <form id="formNewQuestion" class="mui-form">
             <div class="mui-textfield mui-textfield--float-label">
-              <input id="questionInput" type="text" required minlength="10" maxlength="256"/>
+              <input id="questionInput" type="text" required minlength="1" maxlength="500"/>
               <label for="questionInput">Your question...</label>
             </div>
             <button id="submitQuestion" type="submit" class="mui-btn mui-btn--primary mui-btn--fab" disabled>

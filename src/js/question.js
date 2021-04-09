@@ -236,7 +236,7 @@ export class Question {
         const authorId = target.getAttribute("data-authorId");
         createModal(`<form id="formNewAnswer" class="mui-form">
                       <div class="mui-textfield mui-textfield--float-label">
-                        <input id="answerInput" type="text"" required minlength="10" maxlength="256"/>
+                        <input id="answerInput" type="text"" required minlength="1" maxlength="500"/>
                         <label for="answerInput">Your answer...</label>
                       </div>
                       <button id="submitAnswer" type="submit" class="mui-btn mui-btn--primary mui-btn--fab" disabled>
@@ -319,7 +319,7 @@ export class Question {
         ).innerHTML;
         createModal(`<form id="formEditAnswer" class="mui-form">
                   <div class="mui-textfield mui-textfield--float-label">
-                    <input id="answerEditInput" type="text" value="${text}" required minlength="10" maxlength="256"/>
+                    <input id="answerEditInput" type="text" value="${text}" required minlength="1" maxlength="500"/>
                   </div>
                   <button id="submitEditedAnswer" type="submit" class="mui-btn mui-btn--primary mui-btn--fab" disabled>
                     DONE
@@ -440,7 +440,7 @@ export class Question {
         ).innerHTML;
         createModal(`<form id="formEditQuestion" class="mui-form">
                   <div class="mui-textfield mui-textfield--float-label">
-                    <input id="questionEditInput" type="text" value="${text}" required minlength="10" maxlength="256"/>
+                    <input id="questionEditInput" type="text" value="${text}" required minlength="1" maxlength="500"/>
                   </div>
                   <button id="submitEditedQuestion" type="submit" class="mui-btn mui-btn--primary mui-btn--fab" disabled>
                     DONE
@@ -524,7 +524,7 @@ export class Question {
         ).innerHTML;
         createModal(`<form id="formEditAnswer" class="mui-form">
                   <div class="mui-textfield mui-textfield--float-label">
-                    <input id="answerEditInput" type="text" value="${text}" required minlength="10" maxlength="256"/>
+                    <input id="answerEditInput" type="text" value="${text}" required minlength="1" maxlength="500"/>
                   </div>
                   <button id="submitEditedAnswer" type="submit" class="mui-btn mui-btn--primary mui-btn--fab" disabled>
                     DONE
@@ -587,7 +587,7 @@ export class Question {
         const authorId = target.getAttribute("data-authorId");
         createModal(`<form id="formNewAnswer" class="mui-form">
                       <div class="mui-textfield mui-textfield--float-label">
-                        <input id="answerInput" type="text"" required minlength="10" maxlength="256"/>
+                        <input id="answerInput" type="text"" required minlength="1" maxlength="500"/>
                         <label for="answerInput">Your answer...</label>
                       </div>
                       <button id="submitAnswer" type="submit" class="mui-btn mui-btn--primary mui-btn--fab" disabled>

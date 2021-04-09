@@ -26,7 +26,7 @@ export const registerContent = `<h3 class="mui--text-headline">Create new accoun
       type="email"
       required
     />
-    <label for="emailInput">Your Email...</label>
+    <label for="emailInput">Your Email (it will be your nickname)...</label>
   </div>
   <div class="mui-textfield mui-textfield--float-label">
     <input
