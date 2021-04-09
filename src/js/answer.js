@@ -75,7 +75,7 @@ export class Answer {
         if (listOfAnswers.length > 1) {
           const firstAnswerDate = Object.values(a)[0].date;
           const secondAnswerDate = Object.values(b)[0].date;
-          return new Date(secondAnswerDate) - new Date(firstAnswerDate);
+          return new Date(firstAnswerDate) - new Date(secondAnswerDate);
         }
       })
       .forEach((answer) => {

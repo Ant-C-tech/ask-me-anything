@@ -75,8 +75,15 @@ const createUserQuestionCard = (
     ${new Date(question.date).toLocaleTimeString()}
     </time>
   </div>
-  <button class="mui-btn mui-btn--accent delete" data-type="deleteQuestion" data-id="${questionId}">Delete</button>
-  <button class="mui-btn mui-btn--accent edit" data-type="editQuestion" data-id="${questionId}">Edit</button>
+
+  <div class="buttons">
+    <button class="mui-btn mui-btn--primary" data-type="answerQuestion" data-questionId="${questionId}" data-authorId="${authorId}">
+    Answer
+    </button>
+    <button class="mui-btn mui-btn--accent delete" data-type="deleteQuestion" data-id="${questionId}">Delete</button>
+    <button class="mui-btn mui-btn--accent edit" data-type="editQuestion" data-id="${questionId}">Edit</button>
+  </div>
+
   <div class="answers">${listOfAnswers}</div>
 </div>`;
 };
@@ -303,7 +310,6 @@ export class Question {
         target.hasAttribute("data-type") &&
         target.getAttribute("data-type") === "editAnswer"
       ) {
-
         const questionAuthorId = target.getAttribute("data-questionAuthor");
         const questionId = target.getAttribute("data-questionId");
         const answerId = target.getAttribute("data-answerId");
@@ -364,9 +370,9 @@ export class Question {
             });
         };
 
-         answerEditInput.addEventListener("input", () => {
-           editAnswerFormHandler();
-         });
+        answerEditInput.addEventListener("input", () => {
+          editAnswerFormHandler();
+        });
       }
     });
   }
@@ -571,6 +577,68 @@ export class Question {
 
         answerEditInput.addEventListener("input", () => {
           editAnswerFormHandler();
+        });
+      }
+      if (
+        target.hasAttribute("data-type") &&
+        target.getAttribute("data-type") === "answerQuestion"
+      ) {
+        const questionId = target.getAttribute("data-questionId");
+        const authorId = target.getAttribute("data-authorId");
+        createModal(`<form id="formNewAnswer" class="mui-form">
+                      <div class="mui-textfield mui-textfield--float-label">
+                        <input id="answerInput" type="text"" required minlength="10" maxlength="256"/>
+                        <label for="answerInput">Your answer...</label>
+                      </div>
+                      <button id="submitAnswer" type="submit" class="mui-btn mui-btn--primary mui-btn--fab" disabled>
+                        DONE
+                      </button>
+                    </form>`);
+        const answerForm = document.querySelector("#formNewAnswer");
+        const answerInput = answerForm.querySelector("#answerInput");
+        const answerSubmitBtn = answerForm.querySelector("#submitAnswer");
+
+        const answerFormHandler = () => {
+          if (isValidQuestion(answerInput.value)) {
+            answerSubmitBtn.disabled = false;
+            answerForm.addEventListener("submit", submitAnswerFormHandler, {
+              once: true,
+            });
+          }
+        };
+
+        const submitAnswerFormHandler = (e) => {
+          e.preventDefault();
+
+          const answerText = answerInput.value;
+
+          const newAnswer = {
+            author: userName,
+            text: answerText.trim(),
+            date: new Date().toJSON(),
+            authorId: authUid || registerUid,
+          };
+
+          mui.overlay("off");
+
+          Answer.create(
+            newAnswer,
+            questionId,
+            authorId,
+            authToken || registerToken
+          )
+            .then(() => {
+              Question.getRecentUserQuestions();
+            })
+            .catch(() => {
+              createModal(
+                '<div class="mui--text-headline">Something went wrong! Try to create your answer one more time.</div>'
+              );
+            });
+        };
+
+        answerInput.addEventListener("input", () => {
+          answerFormHandler();
         });
       }
     });
